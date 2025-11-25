@@ -4,7 +4,7 @@
       <template #header>
         <div class="header">
           <h2>我的作品</h2>
-          <el-button type="primary" @click="$router.push('/user/create')">
+          <el-button type="primary" @click="$router.push('/home')">
             <el-icon><Plus /></el-icon>
             新建作品
           </el-button>
