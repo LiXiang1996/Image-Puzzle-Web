@@ -112,7 +112,12 @@ const beforeUpload = async (file: File) => {
   try {
     const response = await uploadAvatar(file)
     // 更新头像URL（转换为完整URL）
-    const avatarUrl = response.avatar || response.url
+    // response 已经是 data 部分（响应拦截器已处理）
+    const avatarUrl = (response as any).avatar || (response as any).url
+    if (!avatarUrl) {
+      ElMessage.error('上传失败：未返回头像URL')
+      return false
+    }
     const fullAvatarUrl = getFullUrl(avatarUrl)
     
     profileForm.value.avatar = fullAvatarUrl
@@ -154,10 +159,12 @@ const handleSave = async () => {
     })
     
     // 更新store中的用户信息
+    // response 已经是 data 部分（响应拦截器已处理）
     if (response && userStore.userInfo) {
-      userStore.userInfo.email = response.email || userStore.userInfo.email
-      userStore.userInfo.nickname = response.nickname || userStore.userInfo.nickname
-      userStore.userInfo.avatar = response.avatar || userStore.userInfo.avatar
+      const userData = response as any
+      userStore.userInfo.email = userData.email || userStore.userInfo.email
+      userStore.userInfo.nickname = userData.nickname || userStore.userInfo.nickname
+      userStore.userInfo.avatar = userData.avatar || userStore.userInfo.avatar
       // 更新本地存储
       localStorage.setItem('userInfo', JSON.stringify(userStore.userInfo))
     }

@@ -73,12 +73,37 @@ export interface UpdateUserParams {
 }
 
 /**
+ * 更新用户信息响应接口
+ */
+export interface UpdateUserResponse {
+  id: string
+  username: string
+  email?: string
+  nickname?: string
+  avatar?: string
+  phone?: string
+  bio?: string
+  location?: string
+  website?: string
+  createdAt: string
+  updatedAt: string
+}
+
+/**
+ * 上传头像响应接口
+ */
+export interface UploadAvatarResponse {
+  avatar: string
+  url?: string
+}
+
+/**
  * 更新用户信息
  * @param data 要更新的用户信息
  * @returns 更新后的用户信息
  */
 export const updateUserInfo = (data: UpdateUserParams) => {
-  return request.put('/auth/user', data)
+  return request.put<UpdateUserResponse>('/auth/user', data)
 }
 
 /**
@@ -91,7 +116,7 @@ export const uploadAvatar = (file: File) => {
   formData.append('file', file)
   // 不设置Content-Type，让浏览器自动设置（包含boundary）
   // request拦截器会自动处理FormData
-  return request.post('/auth/upload-avatar', formData)
+  return request.post<UploadAvatarResponse>('/auth/upload-avatar', formData)
 }
 
 /**
