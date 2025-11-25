@@ -15,8 +15,12 @@ export default defineConfig({
     open: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:8080',
+        // 开发环境代理配置
+        // 如果想测试本地后端：target: 'http://localhost:8080'
+        // 如果想测试 Vercel 后端：target: 'https://image-puzzle-server.vercel.app'
+        target: 'https://image-puzzle-server.vercel.app',
         changeOrigin: true,
+        secure: true, // 如果 target 是 https，需要设置为 true
         // 不移除 /api 前缀，因为后端路由需要 /api 前缀
         // rewrite: (path) => path.replace(/^\/api/, ''),
       },

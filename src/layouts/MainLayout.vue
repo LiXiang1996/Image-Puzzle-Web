@@ -142,7 +142,7 @@ const handleCommand = (command: string) => {
 .vip-button {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   padding: 6px 12px;
   border-radius: 6px;
   transition: all 0.3s;
@@ -159,6 +159,7 @@ const handleCommand = (command: string) => {
   width: 20px;
   height: 20px;
   object-fit: contain;
+  margin-right: 4px;
 }
 
 .vip-text {

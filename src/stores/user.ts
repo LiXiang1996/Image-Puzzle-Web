@@ -9,6 +9,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { UserInfo } from '@/types/user'
 import { login, register, getUserInfo, type LoginResponse } from '@/api/auth'
+import { getFullUrl } from '@/utils/api'
 
 export const useUserStore = defineStore('user', () => {
   // 用户认证令牌
@@ -69,9 +70,9 @@ export const useUserStore = defineStore('user', () => {
     try {
       const response = (await getUserInfo()) as unknown as UserInfo
       
-      // 处理头像URL：如果是相对路径，拼接后端地址
-      if (response.avatar && !response.avatar.startsWith('http')) {
-        response.avatar = `http://localhost:8080${response.avatar.startsWith('/') ? '' : '/'}${response.avatar}`
+      // 处理头像URL：如果是相对路径，转换为完整URL
+      if (response.avatar) {
+        response.avatar = getFullUrl(response.avatar)
       }
       
       userInfo.value = response
@@ -106,9 +107,9 @@ export const useUserStore = defineStore('user', () => {
       try {
         const parsedInfo = JSON.parse(savedUserInfo)
         
-        // 处理头像URL：如果是相对路径，拼接后端地址
-        if (parsedInfo.avatar && !parsedInfo.avatar.startsWith('http')) {
-          parsedInfo.avatar = `http://localhost:8080${parsedInfo.avatar.startsWith('/') ? '' : '/'}${parsedInfo.avatar}`
+        // 处理头像URL：如果是相对路径，转换为完整URL
+        if (parsedInfo.avatar) {
+          parsedInfo.avatar = getFullUrl(parsedInfo.avatar)
         }
         
         userInfo.value = parsedInfo

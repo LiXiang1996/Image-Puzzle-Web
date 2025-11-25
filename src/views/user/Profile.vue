@@ -46,6 +46,7 @@ import { useUserStore } from '@/stores/user'
 import { ElMessage } from 'element-plus'
 import { Plus, Loading } from '@element-plus/icons-vue'
 import { updateUserInfo, uploadAvatar } from '@/api/auth'
+import { getFullUrl } from '@/utils/api'
 
 const userStore = useUserStore()
 
@@ -68,11 +69,8 @@ const loadUserInfo = async () => {
     }
     
     if (userStore.userInfo) {
-      // 处理头像URL：如果是相对路径，拼接后端地址
-      let avatarUrl = userStore.userInfo.avatar || ''
-      if (avatarUrl && !avatarUrl.startsWith('http')) {
-        avatarUrl = `http://localhost:8080${avatarUrl.startsWith('/') ? '' : '/'}${avatarUrl}`
-      }
+      // 处理头像URL：转换为完整URL
+      const avatarUrl = userStore.userInfo.avatar ? getFullUrl(userStore.userInfo.avatar) : ''
       
       profileForm.value = {
         username: userStore.userInfo.username,
@@ -113,12 +111,9 @@ const beforeUpload = async (file: File) => {
   uploading.value = true
   try {
     const response = await uploadAvatar(file)
-    // 更新头像URL（需要拼接完整路径）
+    // 更新头像URL（转换为完整URL）
     const avatarUrl = response.avatar || response.url
-    // 如果URL不是完整路径，拼接后端地址
-    const fullAvatarUrl = avatarUrl.startsWith('http') 
-      ? avatarUrl 
-      : `http://localhost:8080${avatarUrl.startsWith('/') ? '' : '/'}${avatarUrl}`
+    const fullAvatarUrl = getFullUrl(avatarUrl)
     
     profileForm.value.avatar = fullAvatarUrl
     

@@ -11,8 +11,23 @@ import router from '@/router'
  * 创建 axios 实例
  * 配置基础 URL、超时时间和默认请求头
  */
+/**
+ * 获取 API 基础 URL
+ * 开发环境：使用 /api（通过 Vite 代理到 localhost:8080）
+ * 生产环境：使用环境变量中的完整 URL（如 https://image-puzzle-server.vercel.app/api）
+ */
+const getBaseURL = (): string => {
+  const envUrl = import.meta.env.VITE_API_BASE_URL
+  if (envUrl && (envUrl.startsWith('http://') || envUrl.startsWith('https://'))) {
+    // 生产环境：使用完整的 URL
+    return envUrl
+  }
+  // 开发环境：使用相对路径，通过 Vite 代理
+  return '/api'
+}
+
 const service: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || '/api', // API 基础路径
+  baseURL: getBaseURL(), // API 基础路径
   timeout: 10000, // 请求超时时间 10 秒
   headers: {
     'Content-Type': 'application/json;charset=UTF-8',
