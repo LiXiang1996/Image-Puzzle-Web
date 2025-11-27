@@ -53,15 +53,6 @@ const routes: RouteRecordRaw[] = [
           requiresAuth: true,
         },
       },
-      {
-        path: 'membership',
-        name: 'Membership',
-        component: () => import('@/views/Membership.vue'),
-        meta: {
-          title: '会员购买',
-          requiresAuth: true,
-        },
-      },
     ],
   },
   // 个人中心路由 - 使用 UserLayout 布局，包含侧边栏导航
@@ -81,25 +72,37 @@ const routes: RouteRecordRaw[] = [
           requiresAuth: true,
         },
       },
-      {
-        path: 'consumption',
-        name: 'UserConsumption',
-        component: () => import('@/views/user/Consumption.vue'),
-        meta: {
-          title: '消费历史',
-          requiresAuth: true,
-        },
-      },
-      {
-        path: 'works',
-        name: 'UserWorks',
-        component: () => import('@/views/user/Works.vue'),
-        meta: {
-          title: '我的作品',
-          requiresAuth: true,
-        },
-      },
     ],
+  },
+  // 笔记编辑页
+  {
+    path: '/edit/:id?',
+    name: 'NoteEditor',
+    component: () => import('@/views/NoteEditor.vue'),
+    meta: {
+      title: '编辑笔记',
+      requiresAuth: true,
+    },
+  },
+  // 笔记详情页（公开）
+  {
+    path: '/note/:id',
+    name: 'NoteDetail',
+    component: () => import('@/views/NoteDetail.vue'),
+    meta: {
+      title: '笔记详情',
+      requiresAuth: false, // 公开文章不需要登录
+    },
+  },
+  // 用户公开主页
+  {
+    path: '/u/:user_id',
+    name: 'UserPublicProfile',
+    component: () => import('@/views/UserPublicProfile.vue'),
+    meta: {
+      title: '用户主页',
+      requiresAuth: false,
+    },
   },
   // 404 页面 - 匹配所有未定义的路由
   {
@@ -133,7 +136,7 @@ router.beforeEach((to, _from, next) => {
   
   // 设置页面标题
   if (to.meta.title) {
-    document.title = `${to.meta.title} - ${import.meta.env.VITE_APP_TITLE || '图片积木'}`
+    document.title = `${to.meta.title} - ${import.meta.env.VITE_APP_TITLE || '家书'}`
   }
 
   // 如果已登录，访问登录页时自动跳转到首页（避免重复登录）

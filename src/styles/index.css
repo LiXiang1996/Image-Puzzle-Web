@@ -1,4 +1,4 @@
-/* 全局样式重置 */
+/* ==================== 全局样式重置 ==================== */
 * {
   margin: 0;
   padding: 0;
@@ -9,34 +9,193 @@ html,
 body {
   width: 100%;
   height: 100%;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
-    'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-    'Noto Color Emoji';
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', '微软雅黑', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 #app {
   width: 100%;
   min-height: 100vh;
+  background-color: var(--bg-primary);
 }
 
-/* 滚动条样式 */
+/* ==================== CSS变量定义（暖色调主题） ==================== */
+:root {
+  /* 主色调 - 温暖的橙红色系 */
+  --primary-color: #FF8A65;
+  --primary-light: #FFB08A;
+  --primary-dark: #E67A5A;
+
+  /* 背景色 - 米白色系 */
+  --bg-primary: #FFFBF7;
+  --bg-secondary: #FFF8F0;
+  --bg-card: #FFFFFF;
+  --bg-hover: #FFF5E8;
+
+  /* 文字色 - 暖灰色系 */
+  --text-primary: #3E2723;
+  --text-secondary: #6D4C41;
+  --text-tertiary: #A1887F;
+  --text-disabled: #BCAAA4;
+
+  /* 边框色 */
+  --border-color: #E0D5CC;
+  --border-light: #F5F0EB;
+
+  /* 状态色 */
+  --status-private: #A1887F;
+  --status-public: #81C784;
+  --status-draft: #FF8A65;
+
+  /* 语义色 */
+  --success-color: #81C784;
+  --warning-color: #FFB74D;
+  --error-color: #E57373;
+  --info-color: #64B5F6;
+
+  /* 链接色 */
+  --link-color: #FF8A65;
+  --link-hover: #E67A5A;
+
+  /* 阴影 */
+  --shadow-sm: 0 1px 2px rgba(62, 39, 35, 0.05);
+  --shadow-md: 0 2px 8px rgba(62, 39, 35, 0.08);
+  --shadow-lg: 0 4px 16px rgba(62, 39, 35, 0.12);
+  --card-shadow: 0 2px 8px rgba(62, 39, 35, 0.06);
+  --card-shadow-hover: 0 4px 12px rgba(62, 39, 35, 0.1);
+
+  /* 间距（8px基准） */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+
+  /* 圆角 */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-full: 9999px;
+
+  /* 字体大小 */
+  --font-size-h1: 28px;
+  --font-size-h2: 24px;
+  --font-size-h3: 20px;
+  --font-size-h4: 18px;
+  --font-size-lg: 16px;
+  --font-size-base: 14px;
+  --font-size-sm: 12px;
+  --font-size-xs: 11px;
+
+  /* 行高 */
+  --line-height-tight: 1.4;
+  --line-height-normal: 1.6;
+  --line-height-relaxed: 1.8;
+
+  /* 过渡动画 */
+  --transition-base: all 0.2s ease;
+  --transition-hover: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Element Plus 主题色覆盖 */
+  --el-color-primary: #FF8A65;
+  --el-color-primary-light-3: #FFB08A;
+  --el-color-primary-light-5: #FFC4A3;
+  --el-color-primary-light-7: #FFD8BC;
+  --el-color-primary-light-8: #FFE5D1;
+  --el-color-primary-light-9: #FFF2E8;
+  --el-color-primary-dark-2: #E67A5A;
+
+  --el-bg-color: #FFFBF7;
+  --el-bg-color-page: #FFF8F0;
+
+  --el-text-color-primary: #3E2723;
+  --el-text-color-regular: #6D4C41;
+  --el-text-color-secondary: #A1887F;
+
+  --el-border-color: #E0D5CC;
+  --el-border-color-light: #F5F0EB;
+
+  --el-border-radius-base: 6px;
+  --el-border-radius-small: 4px;
+}
+
+/* ==================== 滚动条样式（暖色调） ==================== */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--bg-secondary);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 4px;
+  background: var(--border-color);
+  border-radius: var(--radius-sm);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: var(--text-tertiary);
+}
+
+/* ==================== 通用工具类 ==================== */
+
+/* 卡片样式 */
+.card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--card-shadow);
+  transition: var(--transition-base);
+}
+
+.card:hover {
+  box-shadow: var(--card-shadow-hover);
+  transform: translateY(-2px);
+}
+
+/* 状态标签 */
+.tag-private {
+  display: inline-block;
+  background: rgba(161, 136, 127, 0.1);
+  color: var(--status-private);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+}
+
+.tag-public {
+  background: rgba(129, 199, 132, 0.1);
+  color: var(--status-public);
+}
+
+.tag-draft {
+  background: rgba(255, 138, 101, 0.1);
+  color: var(--status-draft);
+}
+
+/* 链接样式 */
+a {
+  color: var(--link-color);
+  text-decoration: none;
+  transition: var(--transition-base);
+}
+
+a:hover {
+  color: var(--link-hover);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  :root {
+    --spacing-lg: 16px;
+    --spacing-xl: 24px;
+  }
 }
 

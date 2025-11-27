@@ -12,10 +12,17 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
+    "@tiptap/extension-code-block-lowlight": "^3.11.0",
+    "@tiptap/extension-image": "^3.11.0",
+    "@tiptap/extension-link": "^3.11.0",
+    "@tiptap/starter-kit": "^3.11.0",
+    "@tiptap/vue-3": "^3.11.0",
     "axios": "^1.7.9",
     "dayjs": "^1.11.13",
     "element-plus": "^2.8.8",
     "lodash-es": "^4.17.21",
+    "lowlight": "^3.3.0",
+    "marked": "^17.0.1",
     "pinia": "^2.2.7",
     "vue": "^3.5.18",
     "vue-router": "^4.5.1"

@@ -3,15 +3,7 @@
     <el-container>
       <el-header class="header">
         <div class="header-left">
-          <h2 class="logo">图片积木</h2>
-          <el-button 
-            type="text" 
-            class="vip-button"
-            @click="router.push('/home/membership')"
-          >
-            <img src="@/assets/vip.png" alt="VIP" class="vip-icon" />
-            <span class="vip-text">获取会员</span>
-          </el-button>
+          <h2 class="logo">家书</h2>
         </div>
         <div class="header-right">
           <el-dropdown @command="handleCommand">
@@ -117,13 +109,13 @@ const handleCommand = (command: string) => {
 }
 
 .header {
-  background-color: white;
-  border-bottom: 1px solid #e4e7ed;
+  background-color: var(--bg-card);
+  border-bottom: 1px solid var(--border-light);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  padding: 0 var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
 }
 
 .header-left {
@@ -133,10 +125,11 @@ const handleCommand = (command: string) => {
 
 .logo {
   margin: 0;
-  font-size: 20px;
-  font-weight: bold;
-  color: #409eff;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--primary-color);
   margin-right: 16px;
+  letter-spacing: 1px;
 }
 
 .vip-button {
@@ -195,11 +188,11 @@ const handleCommand = (command: string) => {
 }
 
 .main-content {
-  background-color: #f0f2f5;
+  background-color: var(--bg-primary);
   padding: 0;
   overflow-y: auto;
   overflow-x: hidden;
-  height: calc(100vh - 60px);
+  height: calc(100vh - 64px);
 }
 </style>
 
