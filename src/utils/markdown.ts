@@ -8,7 +8,8 @@ import { marked } from 'marked'
  */
 export const renderMarkdown = (markdown: string): string => {
   if (!markdown) return ''
-  return marked(markdown)
+  // marked 默认是同步的
+  return marked(markdown) as string
 }
 
 /**
@@ -23,4 +24,3 @@ export const getPreview = (markdown: string, length = 50): string => {
     .trim()
   return text.substring(0, length) + (text.length > length ? '...' : '')
 }
-

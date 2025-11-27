@@ -65,11 +65,11 @@ export const useNotesStore = defineStore('notes', () => {
         status: params?.status || (currentFilter.value === 'all' ? undefined : currentFilter.value),
       })
 
-      if (response.data) {
-        notes.value = response.data.list
-        total.value = response.data.total
-        page.value = response.data.page
-        pageSize.value = response.data.page_size
+      if (response) {
+        notes.value = response.list
+        total.value = response.total
+        page.value = response.page
+        pageSize.value = response.page_size
       }
 
       return response
@@ -88,8 +88,8 @@ export const useNotesStore = defineStore('notes', () => {
     loading.value = true
     try {
       const response = await getNoteById(noteId)
-      if (response.data) {
-        currentNote.value = response.data
+      if (response) {
+        currentNote.value = response as NoteDetail
       }
       return response
     } catch (error) {
@@ -107,10 +107,10 @@ export const useNotesStore = defineStore('notes', () => {
     loading.value = true
     try {
       const response = await createNote(data)
-      if (response.data) {
+      if (response) {
         // 创建成功后，刷新列表
         await fetchNotes()
-        currentNote.value = response.data
+        currentNote.value = response as NoteDetail
       }
       return response
     } catch (error) {
@@ -128,17 +128,17 @@ export const useNotesStore = defineStore('notes', () => {
     loading.value = true
     try {
       const response = await updateNote(noteId, data)
-      if (response.data) {
+      if (response) {
         // 更新当前笔记
         if (currentNote.value?.id === noteId) {
-          currentNote.value = response.data
+          currentNote.value = response as NoteDetail
         }
         // 更新列表中的笔记
         const index = notes.value.findIndex((n) => n.id === noteId)
         if (index !== -1) {
           notes.value[index] = {
             ...notes.value[index],
-            ...response.data,
+            ...response,
           }
         }
       }
@@ -179,7 +179,7 @@ export const useNotesStore = defineStore('notes', () => {
     loading.value = true
     try {
       const response = await publishNote(noteId)
-      if (response.data) {
+      if (response) {
         // 更新列表中的笔记状态
         const index = notes.value.findIndex((n) => n.id === noteId)
         if (index !== -1) {
@@ -188,7 +188,7 @@ export const useNotesStore = defineStore('notes', () => {
         // 更新当前笔记
         if (currentNote.value?.id === noteId) {
           currentNote.value.status = 'public'
-          currentNote.value.published_at = response.data.published_at
+          currentNote.value.published_at = response.published_at
         }
       }
       return response
@@ -207,7 +207,7 @@ export const useNotesStore = defineStore('notes', () => {
     loading.value = true
     try {
       const response = await saveAsDraft(noteId)
-      if (response.data) {
+      if (response) {
         // 更新列表中的笔记状态
         const index = notes.value.findIndex((n) => n.id === noteId)
         if (index !== -1) {

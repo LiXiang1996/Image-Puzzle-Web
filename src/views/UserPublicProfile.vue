@@ -126,11 +126,11 @@ const fetchNotes = async () => {
       page_size: pageSize.value,
     })
 
-    if (response.data) {
-      notes.value = response.data.list
-      total.value = response.data.total
+    if (response) {
+      notes.value = response.list
+      total.value = response.total
       // TODO: 从API获取用户信息
-      // userInfo.value = response.data.user
+      // userInfo.value = response.user
     }
   } catch (error) {
     console.error('获取用户文章失败:', error)

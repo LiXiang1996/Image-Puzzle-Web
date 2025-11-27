@@ -20,7 +20,7 @@ export const getNotes = (params?: {
   search?: string
   status?: 'private' | 'public' | 'draft' | 'all'
 }) => {
-  return request.get<NoteListResponse>('/notes', { params })
+  return request.get<NoteListResponse['data']>('/notes', { params })
 }
 
 /**
@@ -28,7 +28,7 @@ export const getNotes = (params?: {
  * @param noteId 笔记ID
  */
 export const getNoteById = (noteId: string) => {
-  return request.get<NoteDetailResponse>(`/notes/${noteId}`)
+  return request.get<NoteDetailResponse['data']>(`/notes/${noteId}`)
 }
 
 /**
@@ -36,7 +36,7 @@ export const getNoteById = (noteId: string) => {
  * @param data 笔记数据
  */
 export const createNote = (data: CreateNoteRequest) => {
-  return request.post<NoteDetailResponse>('/notes', data)
+  return request.post<NoteDetailResponse['data']>('/notes', data)
 }
 
 /**
@@ -45,7 +45,7 @@ export const createNote = (data: CreateNoteRequest) => {
  * @param data 更新数据
  */
 export const updateNote = (noteId: string, data: UpdateNoteRequest) => {
-  return request.put<NoteDetailResponse>(`/notes/${noteId}`, data)
+  return request.put<NoteDetailResponse['data']>(`/notes/${noteId}`, data)
 }
 
 /**
@@ -61,7 +61,7 @@ export const deleteNote = (noteId: string) => {
  * @param noteId 笔记ID
  */
 export const publishNote = (noteId: string) => {
-  return request.put<NoteDetailResponse>(`/notes/${noteId}/publish`)
+  return request.put<NoteDetailResponse['data']>(`/notes/${noteId}/publish`)
 }
 
 /**
@@ -69,7 +69,7 @@ export const publishNote = (noteId: string) => {
  * @param noteId 笔记ID
  */
 export const saveAsDraft = (noteId: string) => {
-  return request.put<NoteDetailResponse>(`/notes/${noteId}/draft`)
+  return request.put<NoteDetailResponse['data']>(`/notes/${noteId}/draft`)
 }
 
 /**
@@ -78,7 +78,7 @@ export const saveAsDraft = (noteId: string) => {
  * @param content 笔记内容
  */
 export const autoSaveNote = (noteId: string, content: string) => {
-  return request.put<NoteDetailResponse>(`/notes/${noteId}/autosave`, { content })
+  return request.put<NoteDetailResponse['data']>(`/notes/${noteId}/autosave`, { content })
 }
 
 /**
@@ -89,7 +89,7 @@ export const getDiscoverNotes = (params?: {
   page?: number
   page_size?: number
 }) => {
-  return request.get<DiscoverListResponse>('/discover', { params })
+  return request.get<DiscoverListResponse['data']>('/discover', { params })
 }
 
 /**
@@ -97,7 +97,7 @@ export const getDiscoverNotes = (params?: {
  * @param noteId 笔记ID
  */
 export const getPublicNoteById = (noteId: string) => {
-  return request.get<NoteDetailResponse>(`/discover/${noteId}`)
+  return request.get<NoteDetailResponse['data']>(`/discover/${noteId}`)
 }
 
 /**
@@ -112,6 +112,6 @@ export const getUserPublicNotes = (
     page_size?: number
   }
 ) => {
-  return request.get<DiscoverListResponse>(`/users/${userId}/notes`, { params })
+  return request.get<DiscoverListResponse['data']>(`/users/${userId}/notes`, { params })
 }
 

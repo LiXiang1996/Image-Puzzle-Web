@@ -14,12 +14,8 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
 import MySpace from './MySpace.vue'
 import Discover from './Discover.vue'
-
-const route = useRoute()
-const router = useRouter()
 
 // 当前激活的Tab（默认"我的空间"）
 const activeTab = ref<'myspace' | 'discover'>('myspace')

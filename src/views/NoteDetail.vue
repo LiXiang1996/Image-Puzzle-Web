@@ -105,12 +105,17 @@ const loadNote = async () => {
   loading.value = true
   try {
     const response = await getPublicNoteById(noteId)
-    if (response.data) {
-      note.value = response.data
-      // 这里需要获取作者信息，暂时使用占位符
-      // TODO: 从API获取作者信息
-      authorName.value = '作者'
-      authorAvatar.value = defaultAvatar
+    if (response) {
+      note.value = response as NoteDetail
+      // 从响应中获取作者信息
+      const author = (response as any).author
+      if (author) {
+        authorName.value = author.nickname || author.username || '作者'
+        authorAvatar.value = author.avatar || defaultAvatar
+      } else {
+        authorName.value = '作者'
+        authorAvatar.value = defaultAvatar
+      }
     }
   } catch (error) {
     console.error('加载笔记详情失败:', error)

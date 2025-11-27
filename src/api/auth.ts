@@ -93,8 +93,12 @@ export interface UpdateUserResponse {
  * 上传头像响应接口
  */
 export interface UploadAvatarResponse {
-  avatar: string
-  url?: string
+  code: number
+  message: string
+  data: {
+    avatar: string
+    url?: string
+  }
 }
 
 /**
@@ -116,7 +120,7 @@ export const uploadAvatar = (file: File) => {
   formData.append('file', file)
   // 不设置Content-Type，让浏览器自动设置（包含boundary）
   // request拦截器会自动处理FormData
-  return request.post<UploadAvatarResponse>('/auth/upload-avatar', formData)
+  return request.post<UploadAvatarResponse['data']>('/auth/upload-avatar', formData)
 }
 
 /**

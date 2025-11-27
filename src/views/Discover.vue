@@ -115,9 +115,9 @@ const fetchNotes = async () => {
       page_size: pageSize.value,
     })
 
-    if (response.data) {
-      notes.value = response.data.list
-      total.value = response.data.total
+    if (response) {
+      notes.value = response.list
+      total.value = response.total
     }
   } catch (error) {
     console.error('获取发现广场列表失败:', error)

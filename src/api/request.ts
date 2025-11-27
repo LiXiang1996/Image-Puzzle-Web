@@ -3,7 +3,7 @@
  * 统一处理 HTTP 请求的配置、拦截和错误处理
  */
 import axios from 'axios'
-import type { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse } from 'axios'
+import type { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse, AxiosRequestConfig } from 'axios'
 import { ElMessage } from 'element-plus'
 import router from '@/router'
 
@@ -33,6 +33,22 @@ const service: AxiosInstance = axios.create({
     'Content-Type': 'application/json;charset=UTF-8',
   },
 })
+
+// 封装请求方法，返回类型为 T（拦截器已经提取了 data 字段）
+const apiRequest = {
+  get: <T = any>(url: string, config?: AxiosRequestConfig): Promise<T> => {
+    return service.get<T>(url, config) as Promise<T>
+  },
+  post: <T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> => {
+    return service.post<T>(url, data, config) as Promise<T>
+  },
+  put: <T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> => {
+    return service.put<T>(url, data, config) as Promise<T>
+  },
+  delete: <T = any>(url: string, config?: AxiosRequestConfig): Promise<T> => {
+    return service.delete<T>(url, config) as Promise<T>
+  },
+}
 
 /**
  * 请求拦截器
@@ -96,5 +112,6 @@ service.interceptors.response.use(
   }
 )
 
-export default service
+// 导出封装后的请求方法
+export default apiRequest
 

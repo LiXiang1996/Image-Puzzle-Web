@@ -6,18 +6,18 @@
         <div class="toolbar-group">
           <el-button
             :type="editor?.isActive('bold') ? 'primary' : 'default'"
-            :icon="Bold"
             @click="editor?.chain().focus().toggleBold().run()"
             size="small"
-            circle
-          />
+          >
+            <strong>B</strong>
+          </el-button>
           <el-button
             :type="editor?.isActive('italic') ? 'primary' : 'default'"
-            :icon="Italic"
             @click="editor?.chain().focus().toggleItalic().run()"
             size="small"
-            circle
-          />
+          >
+            <em>I</em>
+          </el-button>
         </div>
         <div class="toolbar-group">
           <el-button
@@ -50,11 +50,11 @@
             circle
           />
           <el-button
-            :icon="Link"
             @click="handleInsertLink"
             size="small"
-            circle
-          />
+          >
+            链接
+          </el-button>
           <el-button
             :type="editor?.isActive('codeBlock') ? 'primary' : 'default'"
             @click="editor?.chain().focus().toggleCodeBlock().run()"
@@ -124,10 +124,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
+import { ref, onBeforeUnmount, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
-import '@tiptap/vue-3/style.css'
 import StarterKit from '@tiptap/starter-kit'
 import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
@@ -135,10 +134,7 @@ import { useNotesStore } from '@/stores/notes'
 import { uploadAvatar } from '@/api/auth'
 import { ElMessage, ElInput } from 'element-plus'
 import {
-  Bold,
-  Italic,
   Picture,
-  Link as LinkIcon,
   ChatLineRound,
 } from '@element-plus/icons-vue'
 import { debounce } from '@/utils/index'
@@ -252,7 +248,7 @@ const handleInsertImage = () => {
     try {
       // 上传图片
       const response = await uploadAvatar(file)
-      const imageUrl = response.avatar || response.url
+      const imageUrl = response?.avatar || response?.url
 
       if (imageUrl && editor.value) {
         // 插入图片到编辑器
@@ -299,13 +295,14 @@ const handleSaveAsDraft = async () => {
       await notesStore.saveNoteAsDraft(noteId.value)
     } else {
       // 创建新笔记
-      const response = await notesStore.addNote({
+      await notesStore.addNote({
         title: noteTitle.value,
         content,
         status: 'draft',
       })
-      if (response.data) {
-        noteId.value = response.data.id
+      // addNote 会自动更新 currentNote，从那里获取 id
+      if (notesStore.currentNote) {
+        noteId.value = notesStore.currentNote.id
         router.replace(`/edit/${noteId.value}`)
       }
     }
@@ -343,15 +340,18 @@ const handlePublish = async () => {
       await notesStore.publishNoteById(noteId.value)
     } else {
       // 创建新笔记并发布
-      const response = await notesStore.addNote({
+      await notesStore.addNote({
         title: noteTitle.value,
         content,
         status: 'public',
       })
-      if (response.data) {
-        noteId.value = response.data.id
-        await notesStore.publishNoteById(noteId.value)
-        router.replace(`/edit/${noteId.value}`)
+      // addNote 会自动更新 currentNote，从那里获取 id
+      if (notesStore.currentNote) {
+        noteId.value = notesStore.currentNote.id
+        if (noteId.value) {
+          await notesStore.publishNoteById(noteId.value)
+          router.replace(`/edit/${noteId.value}`)
+        }
       }
     }
 
