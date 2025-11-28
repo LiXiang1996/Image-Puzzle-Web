@@ -1,35 +1,40 @@
 <template>
   <div class="user-layout">
     <el-container>
-      <el-aside width="200px" class="sidebar">
-        <div class="logo" @click="handleLogoClick">图片积木</div>
+      <el-aside width="240px" class="sidebar">
+        <div class="logo" @click="handleLogoClick">
+          <span class="logo-text">家书</span>
+        </div>
         <el-menu
           :default-active="activeMenu"
           class="sidebar-menu"
-          background-color="#304156"
-          text-color="#bfcbd9"
-          active-text-color="#409eff"
           @select="handleMenuSelect"
         >
           <el-menu-item index="/user/profile">
             <el-icon><User /></el-icon>
             <span>个人资料</span>
           </el-menu-item>
-          <el-menu-item index="/user/consumption">
-            <el-icon><Money /></el-icon>
-            <span>消费历史</span>
-          </el-menu-item>
-          <el-menu-item index="/user/works">
-            <el-icon><Picture /></el-icon>
-            <span>我的作品</span>
-          </el-menu-item>
         </el-menu>
       </el-aside>
       <el-container>
         <el-header class="header">
           <div class="header-right">
-            <span>{{ userStore.userInfo?.username }}</span>
-            <el-button type="text" @click="handleLogout">退出登录</el-button>
+            <div class="user-info">
+              <img 
+                :src="avatarUrl" 
+                alt="头像" 
+                class="user-avatar"
+                @error="handleAvatarError"
+              />
+              <span class="username">{{ displayName }}</span>
+            </div>
+            <el-button 
+              type="text" 
+              class="logout-btn"
+              @click="handleLogout"
+            >
+              退出登录
+            </el-button>
           </div>
         </el-header>
         <el-main class="main-content">
@@ -45,18 +50,55 @@
  * 个人中心布局组件
  * 包含侧边栏导航和主内容区域
  */
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { ElMessage } from 'element-plus'
-import { User, Money, Picture } from '@element-plus/icons-vue'
+import { User } from '@element-plus/icons-vue'
+import defaultAvatar from '@/assets/default_avatar.png'
 
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
 
+// 头像加载错误处理
+const avatarError = ref(false)
+
 // 计算当前激活的菜单项（根据当前路由路径）
 const activeMenu = computed(() => route.path)
+
+/**
+ * 计算属性：获取头像URL
+ */
+const avatarUrl = computed(() => {
+  if (avatarError.value) {
+    return defaultAvatar
+  }
+  
+  const userAvatar = userStore.userInfo?.avatar
+  if (userAvatar && userAvatar.trim()) {
+    return userAvatar
+  }
+  
+  return defaultAvatar
+})
+
+/**
+ * 计算属性：显示名称
+ * 优先显示昵称，如果没有昵称则显示用户名
+ */
+const displayName = computed(() => {
+  const nickname = userStore.userInfo?.nickname
+  const username = userStore.userInfo?.username
+  return nickname?.trim() || username || '用户'
+})
+
+/**
+ * 头像加载错误处理
+ */
+const handleAvatarError = () => {
+  avatarError.value = true
+}
 
 /**
  * Logo 点击事件
@@ -98,50 +140,127 @@ const handleLogout = () => {
 <style scoped>
 .user-layout {
   height: 100vh;
+  background-color: var(--bg-primary);
 }
 
 .sidebar {
-  background-color: #304156;
+  background-color: var(--bg-card);
   height: 100vh;
+  border-right: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
 }
 
 .logo {
-  height: 60px;
-  line-height: 60px;
-  text-align: center;
-  color: white;
-  font-size: 18px;
-  font-weight: bold;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   transition: background-color 0.3s;
+  border-bottom: 1px solid var(--border-light);
 }
 
 .logo:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--bg-hover);
+}
+
+.logo-text {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--primary-color);
+  letter-spacing: 2px;
 }
 
 .sidebar-menu {
   border-right: none;
+  background-color: transparent;
+  padding-top: var(--spacing-md);
+}
+
+.sidebar-menu :deep(.el-menu-item) {
+  height: 48px;
+  line-height: 48px;
+  color: var(--text-secondary);
+  margin: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--radius-md);
+  transition: all 0.3s;
+}
+
+.sidebar-menu :deep(.el-menu-item:hover) {
+  background-color: var(--bg-hover);
+  color: var(--primary-color);
+}
+
+.sidebar-menu :deep(.el-menu-item.is-active) {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.sidebar-menu :deep(.el-menu-item.is-active:hover) {
+  background-color: var(--primary-dark);
 }
 
 .header {
-  background-color: white;
-  border-bottom: 1px solid #e4e7ed;
+  background-color: var(--bg-card);
+  border-bottom: 1px solid var(--border-light);
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding: 0 20px;
+  padding: 0 var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
 }
 
 .header-right {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: var(--spacing-lg);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  transition: background-color 0.3s;
+}
+
+.user-info:hover {
+  background-color: var(--bg-hover);
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border-light);
+  flex-shrink: 0;
+}
+
+.username {
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.logout-btn {
+  color: var(--text-secondary);
+  font-size: var(--font-size-base);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-md);
+  transition: all 0.3s;
+}
+
+.logout-btn:hover {
+  color: var(--error-color);
+  background-color: var(--bg-hover);
 }
 
 .main-content {
-  background-color: #f0f2f5;
-  padding: 20px;
+  background-color: var(--bg-primary);
+  padding: var(--spacing-xl);
+  overflow-y: auto;
 }
 </style>
 

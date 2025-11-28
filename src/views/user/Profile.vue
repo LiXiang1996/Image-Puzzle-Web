@@ -1,42 +1,89 @@
 <template>
-  <div class="profile">
-    <el-card>
-      <template #header>
-        <h2>个人资料</h2>
-      </template>
-      <el-form :model="profileForm" label-width="100px">
-        <el-form-item label="用户名">
-          <el-input v-model="profileForm.username" disabled />
-        </el-form-item>
-        <el-form-item label="邮箱">
-          <el-input v-model="profileForm.email" />
-        </el-form-item>
-        <el-form-item label="昵称">
-          <el-input v-model="profileForm.nickname" />
-        </el-form-item>
-        <el-form-item label="头像">
-          <el-upload
-            class="avatar-uploader"
-            action="#"
-            :show-file-list="false"
-            :before-upload="beforeUpload"
-            :disabled="uploading"
-          >
-            <div v-if="uploading" class="uploading-overlay">
-              <el-icon class="is-loading"><Loading /></el-icon>
-              <span>上传中...</span>
-            </div>
-            <img v-else-if="profileForm.avatar" :src="profileForm.avatar" class="avatar" />
-            <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
-          </el-upload>
-          <div class="upload-tip">支持 JPG、PNG、GIF 格式，大小不超过 5MB</div>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="handleSave" :loading="loading">保存</el-button>
-          <el-button @click="loadUserInfo" style="margin-left: 10px">重置</el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
+  <div class="profile-container">
+    <div class="profile-card">
+      <div class="profile-header">
+        <h2 class="profile-title">个人资料</h2>
+        <p class="profile-subtitle">管理你的账户信息和设置</p>
+      </div>
+      
+      <div class="profile-content">
+        <!-- 头像区域 -->
+        <div class="avatar-section">
+          <div class="avatar-wrapper">
+            <el-upload
+              class="avatar-uploader"
+              action="#"
+              :show-file-list="false"
+              :before-upload="beforeUpload"
+              :disabled="uploading"
+            >
+              <div v-if="uploading" class="uploading-overlay">
+                <el-icon class="is-loading"><Loading /></el-icon>
+                <span>上传中...</span>
+              </div>
+              <img v-else-if="profileForm.avatar" :src="profileForm.avatar" class="avatar" />
+              <div v-else class="avatar-placeholder">
+                <el-icon class="avatar-icon"><Plus /></el-icon>
+                <span class="avatar-text">上传头像</span>
+              </div>
+            </el-upload>
+          </div>
+          <p class="upload-tip">支持 JPG、PNG、GIF 格式，大小不超过 5MB</p>
+        </div>
+
+        <!-- 表单区域 -->
+        <el-form 
+          :model="profileForm" 
+          label-width="100px"
+          class="profile-form"
+        >
+          <el-form-item label="用户名">
+            <el-input 
+              v-model="profileForm.username" 
+              disabled
+              class="form-input"
+            />
+            <span class="form-tip">用户名不可修改</span>
+          </el-form-item>
+          
+          <el-form-item label="昵称">
+            <el-input 
+              v-model="profileForm.nickname" 
+              placeholder="请输入昵称"
+              class="form-input"
+              maxlength="20"
+              show-word-limit
+            />
+          </el-form-item>
+          
+          <el-form-item label="邮箱">
+            <el-input 
+              v-model="profileForm.email" 
+              placeholder="请输入邮箱地址"
+              class="form-input"
+              type="email"
+            />
+          </el-form-item>
+          
+          <el-form-item class="form-actions">
+            <el-button 
+              type="primary" 
+              @click="handleSave" 
+              :loading="loading"
+              class="save-btn"
+            >
+              保存修改
+            </el-button>
+            <el-button 
+              @click="loadUserInfo"
+              class="reset-btn"
+            >
+              重置
+            </el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -180,59 +227,207 @@ const handleSave = async () => {
 </script>
 
 <style scoped>
-.profile {
+.profile-container {
   max-width: 800px;
+  margin: 0 auto;
+}
+
+.profile-card {
+  background-color: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+}
+
+.profile-header {
+  padding: var(--spacing-xl);
+  border-bottom: 1px solid var(--border-light);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-card) 100%);
+}
+
+.profile-title {
+  margin: 0;
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.profile-subtitle {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--text-tertiary);
+}
+
+.profile-content {
+  padding: var(--spacing-xl);
+}
+
+.avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: var(--spacing-xl);
+  padding-bottom: var(--spacing-xl);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.avatar-wrapper {
+  margin-bottom: var(--spacing-md);
 }
 
 .avatar-uploader {
   display: flex;
+  justify-content: center;
 }
 
 .avatar-uploader :deep(.el-upload) {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius-full);
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  transition: 0.3s;
+  transition: all 0.3s;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .avatar-uploader :deep(.el-upload:hover) {
-  border-color: #409eff;
-}
-
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
-  text-align: center;
+  border-color: var(--primary-color);
+  background-color: var(--bg-hover);
 }
 
 .avatar {
-  width: 178px;
-  height: 178px;
+  width: 120px;
+  height: 120px;
   display: block;
   object-fit: cover;
+  border-radius: var(--radius-full);
 }
 
-.uploading-overlay {
-  width: 178px;
-  height: 178px;
+.avatar-placeholder {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.9);
-  color: #409eff;
-  gap: 8px;
+  gap: var(--spacing-xs);
+  width: 100%;
+  height: 100%;
+}
+
+.avatar-icon {
+  font-size: 32px;
+  color: var(--text-tertiary);
+}
+
+.avatar-text {
+  font-size: var(--font-size-sm);
+  color: var(--text-tertiary);
+}
+
+.uploading-overlay {
+  width: 120px;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: var(--radius-full);
+  color: var(--primary-color);
+  gap: var(--spacing-sm);
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .upload-tip {
-  font-size: 12px;
-  color: #909399;
-  margin-top: 8px;
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  text-align: center;
+  margin-top: var(--spacing-sm);
+}
+
+.profile-form {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.profile-form :deep(.el-form-item) {
+  margin-bottom: var(--spacing-lg);
+}
+
+.profile-form :deep(.el-form-item__label) {
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: var(--font-size-base);
+}
+
+.form-input {
+  max-width: 400px;
+}
+
+.form-input :deep(.el-input__inner) {
+  border-color: var(--border-color);
+  border-radius: var(--radius-md);
+  transition: all 0.3s;
+}
+
+.form-input :deep(.el-input__inner:hover) {
+  border-color: var(--primary-light);
+}
+
+.form-input :deep(.el-input__inner:focus) {
+  border-color: var(--primary-color);
+}
+
+.form-input :deep(.el-input.is-disabled .el-input__inner) {
+  background-color: var(--bg-secondary);
+  color: var(--text-tertiary);
+  cursor: not-allowed;
+}
+
+.form-tip {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  margin-left: var(--spacing-sm);
+}
+
+.form-actions {
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--border-light);
+}
+
+.save-btn {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.save-btn:hover {
+  background-color: var(--primary-dark);
+  border-color: var(--primary-dark);
+}
+
+.reset-btn {
+  border-color: var(--border-color);
+  color: var(--text-secondary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  transition: all 0.3s;
+}
+
+.reset-btn:hover {
+  border-color: var(--primary-light);
+  color: var(--primary-color);
+  background-color: var(--bg-hover);
 }
 </style>
 
