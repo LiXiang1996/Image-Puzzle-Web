@@ -8,6 +8,9 @@
       <el-tab-pane label="发现广场" name="discover">
         <Discover />
       </el-tab-pane>
+      <el-tab-pane label="回忆瞬间" name="memories">
+        <Memories />
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -16,9 +19,10 @@
 import { ref, onMounted } from 'vue'
 import MySpace from './MySpace.vue'
 import Discover from './Discover.vue'
+import Memories from './Memories.vue'
 
 // 当前激活的Tab（默认"我的空间"）
-const activeTab = ref<'myspace' | 'discover'>('myspace')
+const activeTab = ref<'myspace' | 'discover' | 'memories'>('myspace')
 
 // Tab切换处理
 const handleTabChange = (tabName: string) => {
@@ -29,8 +33,8 @@ const handleTabChange = (tabName: string) => {
 // 初始化：从localStorage恢复上次的Tab
 onMounted(() => {
   const savedTab = localStorage.getItem('home_active_tab')
-  if (savedTab === 'myspace' || savedTab === 'discover') {
-    activeTab.value = savedTab
+  if (savedTab === 'myspace' || savedTab === 'discover' || savedTab === 'memories') {
+    activeTab.value = savedTab as 'myspace' | 'discover' | 'memories'
   }
 })
 </script>
