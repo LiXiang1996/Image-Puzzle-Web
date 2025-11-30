@@ -28,7 +28,23 @@
             />
             <span class="author-name">{{ note.author.nickname }}</span>
           </div>
-          <span class="publish-time">{{ formatTime(note.published_at) }}</span>
+          <div class="footer-right">
+            <div class="stats-info">
+              <span class="stat-item">
+                <el-icon class="stat-icon"><Goods /></el-icon>
+                <span class="stat-count">{{ note.like_count || 0 }}</span>
+              </span>
+              <span class="stat-item">
+                <el-icon class="stat-icon"><Star /></el-icon>
+                <span class="stat-count">{{ note.favorite_count || 0 }}</span>
+              </span>
+              <span class="stat-item">
+                <el-icon class="stat-icon"><ChatLineRound /></el-icon>
+                <span class="stat-count">{{ note.comment_count || 0 }}</span>
+              </span>
+            </div>
+            <span class="publish-time">{{ formatTime(note.published_at) }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -198,6 +214,41 @@ onMounted(() => {
   border-top: 1px solid var(--border-light);
 }
 
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.stats-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-tertiary);
+  font-size: var(--font-size-sm);
+  line-height: 1;
+}
+
+.stat-icon {
+  font-size: 14px;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.stat-count {
+  font-size: var(--font-size-sm);
+  color: var(--text-tertiary);
+  min-width: 16px;
+  text-align: left;
+  font-weight: 500;
+}
+
 .author-info {
   display: flex;
   align-items: center;
@@ -229,9 +280,12 @@ onMounted(() => {
 }
 
 .pagination {
-  margin-top: var(--spacing-xl);
+  margin-top: var(--spacing-2xl);
+  padding: var(--spacing-xl) 0;
   display: flex;
   justify-content: center;
+  align-items: center;
+  min-height: 60px;
 }
 
 :deep(.el-pagination) {

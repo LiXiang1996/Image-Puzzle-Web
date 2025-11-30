@@ -83,6 +83,9 @@ export interface PublicNoteItem {
   }
   published_at: string
   created_at: string
+  like_count?: number // 喜爱数
+  favorite_count?: number // 收藏数
+  comment_count?: number // 评论数
 }
 
 /**

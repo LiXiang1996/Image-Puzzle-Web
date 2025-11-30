@@ -289,9 +289,12 @@ onMounted(() => {
 }
 
 .pagination {
-  margin-top: var(--spacing-xl);
+  margin-top: var(--spacing-2xl);
+  padding: var(--spacing-xl) 0;
   display: flex;
   justify-content: center;
+  align-items: center;
+  min-height: 60px;
 }
 
 :deep(.el-pagination) {
