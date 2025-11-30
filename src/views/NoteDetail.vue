@@ -34,7 +34,7 @@
         <div class="action-sidebar" v-if="!isOwnNote && userStore.isAuthenticated">
           <div class="action-item" @click="handleLike" :class="{ active: likeData.is_liked }">
             <el-icon class="action-icon" :class="{ liked: likeData.is_liked }">
-              <Heart />
+              <Goods />
             </el-icon>
             <span class="action-count">{{ likeData.like_count }}</span>
             <span class="action-label">喜爱</span>
@@ -127,11 +127,7 @@ import {
 } from '@/api/interaction'
 import type { CommentItem } from '@/types/interaction'
 import { ElMessage } from 'element-plus'
-import { 
-  Heart, 
-  Star, 
-  ChatLineRound 
-} from '@element-plus/icons-vue'
+// 图标通过全局注册使用，不需要单独导入
 import CommentList from '@/components/CommentList.vue'
 
 const route = useRoute()
@@ -401,7 +397,7 @@ const handleReply = (commentId: number, authorName: string) => {
  */
 const handleDeleteComment = async (commentId: number) => {
   try {
-    await deleteComment(commentId)
+    await deleteComment(commentId.toString())
     ElMessage.success('删除成功')
     await loadComments()
   } catch (error: any) {

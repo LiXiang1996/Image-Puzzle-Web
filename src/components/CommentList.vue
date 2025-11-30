@@ -13,15 +13,15 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { CommentItem } from '@/types/interaction'
+import type { CommentItem as CommentItemType } from '@/types/interaction'
 import CommentItem from './CommentItem.vue'
 import { useUserStore } from '@/stores/user'
 
 interface Props {
-  comments: CommentItem[]
+  comments: CommentItemType[]
 }
 
-const props = defineProps<Props>()
+defineProps<Props>()
 
 const emit = defineEmits<{
   reply: [commentId: number, authorName: string]

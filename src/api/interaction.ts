@@ -75,7 +75,7 @@ export const getComments = (noteId: string) => {
  * 删除评论
  * @param commentId 评论ID
  */
-export const deleteComment = (commentId: string) => {
+export const deleteComment = (commentId: string | number) => {
   return request.delete<{ code: number; message: string; data: {} }>(`/comments/${commentId}`)
 }
 

@@ -85,7 +85,8 @@ const handleReply = () => {
 }
 
 const handleDelete = () => {
-  emit('delete', parseInt(props.comment.id))
+  const commentId = typeof props.comment.id === 'string' ? parseInt(props.comment.id) : props.comment.id
+  emit('delete', commentId)
 }
 </script>
 
