@@ -1,6 +1,18 @@
 <template>
   <div class="note-editor-container">
     <div class="editor-wrapper">
+      <!-- 顶部操作栏 -->
+      <div class="editor-header">
+        <el-button
+          type="text"
+          @click="router.push('/home')"
+          class="back-button"
+        >
+          <el-icon><ArrowLeft /></el-icon>
+          <span>返回首页</span>
+        </el-button>
+      </div>
+      
       <!-- 工具栏 -->
       <div class="toolbar">
         <div class="toolbar-group">
@@ -95,9 +107,17 @@
       <!-- 底部操作栏 -->
       <div class="editor-footer">
         <div class="status-info">
+          <div class="status-selector">
+            <span class="status-label">发布状态：</span>
+            <el-radio-group v-model="publishStatus" size="small">
+              <el-radio-button label="public">公开</el-radio-button>
+              <el-radio-button label="private">私密</el-radio-button>
+            </el-radio-group>
+          </div>
           <el-tag
             :type="getStatusTagType(currentStatus)"
             size="small"
+            v-if="noteId"
           >
             {{ getStatusText(currentStatus) }}
           </el-tag>
@@ -131,11 +151,12 @@ import StarterKit from '@tiptap/starter-kit'
 import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
 import { useNotesStore } from '@/stores/notes'
-import { uploadAvatar } from '@/api/auth'
+import { uploadNoteImage } from '@/api/notes'
 import { ElMessage, ElInput } from 'element-plus'
 import {
   Picture,
   ChatLineRound,
+  ArrowLeft,
 } from '@element-plus/icons-vue'
 import { debounce } from '@/utils/index'
 
@@ -147,6 +168,7 @@ const notesStore = useNotesStore()
 const noteId = ref<string | null>(route.params.id as string || null)
 const noteTitle = ref('')
 const currentStatus = ref<'private' | 'public' | 'draft'>('private')
+const publishStatus = ref<'private' | 'public'>('public') // 发布状态选择，默认公开
 const saving = ref(false)
 const saveStatus = ref('已保存')
 
@@ -246,9 +268,9 @@ const handleInsertImage = () => {
     }
 
     try {
-      // 上传图片
-      const response = await uploadAvatar(file)
-      const imageUrl = response?.avatar || response?.url
+      // 上传笔记内容中的图片（使用专门的接口，不会更新用户头像）
+      const response = await uploadNoteImage(file)
+      const imageUrl = response?.url || response?.image
 
       if (imageUrl && editor.value) {
         // 插入图片到编辑器
@@ -329,34 +351,44 @@ const handlePublish = async () => {
   saving.value = true
   try {
     const content = editor.value?.getHTML() || ''
+    const targetStatus = publishStatus.value // 使用用户选择的状态
 
     if (noteId.value) {
       // 更新现有笔记并发布
       await notesStore.updateNoteById(noteId.value, {
         title: noteTitle.value,
         content,
-        status: 'public',
+        status: targetStatus,
       })
-      await notesStore.publishNoteById(noteId.value)
+      
+      // 如果选择公开，调用发布接口；如果选择私密，直接更新状态即可
+      if (targetStatus === 'public') {
+        await notesStore.publishNoteById(noteId.value)
+      }
     } else {
       // 创建新笔记并发布
       await notesStore.addNote({
         title: noteTitle.value,
         content,
-        status: 'public',
+        status: targetStatus,
       })
       // addNote 会自动更新 currentNote，从那里获取 id
       if (notesStore.currentNote) {
         noteId.value = notesStore.currentNote.id
         if (noteId.value) {
-          await notesStore.publishNoteById(noteId.value)
-          router.replace(`/edit/${noteId.value}`)
+          // 如果选择公开，调用发布接口；如果选择私密，已经是私密状态了
+          if (targetStatus === 'public') {
+            await notesStore.publishNoteById(noteId.value)
+          }
         }
       }
     }
 
-    currentStatus.value = 'public'
-    ElMessage.success('发布成功！')
+    currentStatus.value = targetStatus
+    ElMessage.success(targetStatus === 'public' ? '发布成功！' : '已保存为私密笔记')
+    
+    // 发布成功后跳转到首页
+    router.push('/home')
   } catch (error) {
     console.error('发布失败:', error)
     ElMessage.error('发布失败，请重试')
@@ -374,6 +406,7 @@ const loadNote = async () => {
     noteTitle.value = ''
     editor.value?.commands.setContent('')
     currentStatus.value = 'private'
+    publishStatus.value = 'public' // 新建时默认选择公开
     return
   }
 
@@ -385,6 +418,12 @@ const loadNote = async () => {
       noteTitle.value = note.title
       editor.value?.commands.setContent(note.content || '')
       currentStatus.value = note.status
+      // 编辑已有笔记时，根据当前状态设置发布状态选择器
+      if (note.status === 'public') {
+        publishStatus.value = 'public'
+      } else {
+        publishStatus.value = 'private'
+      }
     }
   } catch (error) {
     console.error('加载笔记失败:', error)
@@ -424,6 +463,27 @@ onBeforeUnmount(() => {
   border-radius: var(--radius-lg);
   box-shadow: var(--card-shadow);
   padding: var(--spacing-lg);
+}
+
+.editor-header {
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.back-button {
+  color: var(--text-secondary);
+  font-size: var(--font-size-base);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  transition: all 0.3s;
+}
+
+.back-button:hover {
+  color: var(--primary-color);
+  background-color: var(--bg-hover);
 }
 
 .toolbar {
@@ -540,6 +600,19 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.status-selector {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.status-label {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
 }
 
 .save-status {

@@ -115,3 +115,13 @@ export const getUserPublicNotes = (
   return request.get<DiscoverListResponse['data']>(`/users/${userId}/notes`, { params })
 }
 
+/**
+ * 上传笔记内容中的图片
+ * @param file 图片文件
+ * @returns 上传结果（包含图片URL）
+ */
+export const uploadNoteImage = (file: File) => {
+  const formData = new FormData()
+  formData.append('file', file)
+  return request.post<{ url: string; image?: string }>('/notes/upload-image', formData)
+}
