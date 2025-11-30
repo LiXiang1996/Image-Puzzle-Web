@@ -125,7 +125,7 @@ const handleImageError = (e: Event) => {
 /**
  * 图片加载完成处理（用于瀑布流布局）
  */
-const handleImageLoad = (e: Event) => {
+const handleImageLoad = () => {
   // 图片加载完成后，可以触发瀑布流重新布局
   // 这里暂时不需要特殊处理，CSS会处理布局
 }
