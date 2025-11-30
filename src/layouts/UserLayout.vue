@@ -14,6 +14,10 @@
             <el-icon><User /></el-icon>
             <span>个人资料</span>
           </el-menu-item>
+          <el-menu-item index="/user/favorites">
+            <el-icon><Star /></el-icon>
+            <span>我的收藏</span>
+          </el-menu-item>
         </el-menu>
       </el-aside>
       <el-container>
@@ -54,7 +58,7 @@ import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { ElMessage } from 'element-plus'
-import { User } from '@element-plus/icons-vue'
+import { User, Star } from '@element-plus/icons-vue'
 import defaultAvatar from '@/assets/default_avatar.png'
 
 const route = useRoute()

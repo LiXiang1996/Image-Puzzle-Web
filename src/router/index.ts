@@ -72,6 +72,15 @@ const routes: RouteRecordRaw[] = [
           requiresAuth: true,
         },
       },
+      {
+        path: 'favorites',
+        name: 'UserFavorites',
+        component: () => import('@/views/user/Favorites.vue'),
+        meta: {
+          title: '我的收藏',
+          requiresAuth: true,
+        },
+      },
     ],
   },
   // 笔记编辑页
