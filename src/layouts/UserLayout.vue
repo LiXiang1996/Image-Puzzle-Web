@@ -11,7 +11,7 @@
           @select="handleMenuSelect"
         >
           <el-menu-item index="/user/profile">
-            <el-icon><User /></el-iconnpm>
+            <el-icon><User /></el-icon>
             <span>个人资料</span>
           </el-menu-item>
           <el-menu-item index="/user/favorites">
