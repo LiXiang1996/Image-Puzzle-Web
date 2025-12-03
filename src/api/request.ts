@@ -6,6 +6,7 @@ import axios from 'axios'
 import type { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse, AxiosRequestConfig } from 'axios'
 import { ElMessage } from 'element-plus'
 import router from '@/router'
+import { useUserStore } from '@/stores/user'
 
 /**
  * 创建 axios 实例
@@ -57,8 +58,38 @@ const apiRequest = {
  */
 service.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // 从本地存储获取 token 并添加到请求头
+    // 从本地存储获取 token
     const token = localStorage.getItem('token')
+    
+    // 只对 POST/PUT/DELETE 操作进行认证检查（GET 请求允许未登录用户访问）
+    // 需要认证的操作接口：
+    // - POST /notes/{id}/like - 点赞/取消点赞
+    // - POST /notes/{id}/favorite - 收藏/取消收藏
+    // - POST /notes/{id}/comments - 发表评论
+    // - DELETE /comments/{id} - 删除评论
+    // - POST /user/* - 用户相关操作
+    const isWriteOperation = config.method && ['post', 'put', 'delete'].includes(config.method.toLowerCase())
+    const requiresAuth = isWriteOperation && config.url && (
+      config.url.includes('/like') ||
+      config.url.includes('/favorite') ||
+      (config.url.includes('/comments') && config.method?.toLowerCase() === 'post') ||
+      config.url.includes('/user/') ||
+      (config.url.includes('/notes/') && isWriteOperation)
+    )
+    
+    // 如果是需要认证的写操作但没有 token，直接阻止请求并跳转登录
+    if (requiresAuth && !token) {
+      ElMessage.warning('请先登录')
+      const userStore = useUserStore()
+      userStore.userLogout()
+      router.push({
+        path: '/login',
+        query: { redirect: router.currentRoute.value.fullPath }
+      })
+      return Promise.reject(new Error('未授权，请先登录'))
+    }
+    
+    // 如果有 token，添加到请求头（GET 请求也可以带 token，用于获取用户特定的状态）
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`
     }
@@ -105,7 +136,40 @@ service.interceptors.response.use(
     // 这样可以统一处理不同的 API 响应格式
     return (res && typeof res === 'object' && 'data' in res) ? (res as any).data : res
   },
-  (error) => {
+  (error: any) => {
+    // 处理 HTTP 错误状态码
+    if (error.response) {
+      const status = error.response.status
+      const data = error.response.data
+      
+      // 401: 未授权，清除本地认证信息并跳转到登录页
+      if (status === 401) {
+        // 清除本地存储
+        localStorage.removeItem('token')
+        localStorage.removeItem('userInfo')
+        
+        // 清除 store 中的状态
+        const userStore = useUserStore()
+        userStore.userLogout()
+        
+        ElMessage.warning('请先登录')
+        
+        // 确保跳转到登录页，而不是首页
+        const currentPath = router.currentRoute.value.fullPath
+        router.push({
+          path: '/login',
+          query: { redirect: currentPath }
+        })
+        
+        return Promise.reject(new Error('未授权，请先登录'))
+      }
+      
+      // 其他错误状态码
+      const errorMessage = data?.detail || data?.message || error.message || '请求失败'
+      ElMessage.error(errorMessage)
+      return Promise.reject(new Error(errorMessage))
+    }
+    
     // 处理网络错误或其他异常
     ElMessage.error(error.message || '网络错误')
     return Promise.reject(error)

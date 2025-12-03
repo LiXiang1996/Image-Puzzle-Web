@@ -191,6 +191,212 @@ a:hover {
   color: var(--link-hover);
 }
 
+/* ==================== 全局输入框样式增强 ==================== */
+:deep(.el-input__wrapper) {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+:deep(.el-input__wrapper:hover) {
+  box-shadow: 0 2px 8px rgba(255, 138, 101, 0.08);
+}
+
+:deep(.el-input.is-focus .el-input__wrapper) {
+  box-shadow: 0 4px 12px rgba(255, 138, 101, 0.15);
+}
+
+/* 文本域样式增强 */
+:deep(.el-textarea__inner) {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+:deep(.el-textarea__inner:hover) {
+  box-shadow: 0 2px 8px rgba(255, 138, 101, 0.08);
+}
+
+:deep(.el-textarea.is-focus .el-textarea__inner) {
+  box-shadow: 0 4px 12px rgba(255, 138, 101, 0.15);
+}
+
+/* ==================== 全局按钮样式增强 ==================== */
+:deep(.el-button--primary) {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+  border: none;
+  box-shadow: 
+    0 4px 12px rgba(255, 138, 101, 0.3),
+    0 2px 4px rgba(255, 138, 101, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+:deep(.el-button--primary::before) {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+:deep(.el-button--primary:hover::before) {
+  left: 100%;
+}
+
+:deep(.el-button--primary:hover) {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 6px 20px rgba(255, 138, 101, 0.4),
+    0 4px 8px rgba(255, 138, 101, 0.25);
+}
+
+:deep(.el-button--primary:active) {
+  transform: translateY(0);
+  box-shadow: 
+    0 2px 8px rgba(255, 138, 101, 0.3),
+    0 1px 2px rgba(255, 138, 101, 0.2);
+}
+
+:deep(.el-button--primary.is-disabled) {
+  background: var(--text-disabled);
+  box-shadow: none;
+}
+
+/* 默认按钮样式增强 */
+:deep(.el-button--default) {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+:deep(.el-button--default:hover) {
+  border-color: var(--primary-light);
+  color: var(--primary-color);
+  background: var(--bg-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(255, 138, 101, 0.1);
+}
+
+/* ==================== 卡片样式增强 ==================== */
+.card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--card-shadow);
+  transition: var(--transition-hover);
+  border: 1px solid var(--border-light);
+}
+
+.card:hover {
+  box-shadow: var(--card-shadow-hover);
+  transform: translateY(-2px);
+  border-color: var(--border-color);
+}
+
+/* ==================== 表单样式增强 ==================== */
+:deep(.el-form-item__label) {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+:deep(.el-form-item__error) {
+  color: var(--error-color);
+  font-size: var(--font-size-sm);
+}
+
+/* ==================== 对话框样式增强 ==================== */
+:deep(.el-dialog) {
+  border-radius: 20px;
+  box-shadow: 
+    0 12px 48px rgba(62, 39, 35, 0.12),
+    0 4px 16px rgba(62, 39, 35, 0.08);
+}
+
+:deep(.el-dialog__header) {
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+:deep(.el-dialog__title) {
+  font-size: var(--font-size-h3);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+:deep(.el-dialog__body) {
+  padding: 24px;
+}
+
+:deep(.el-dialog__footer) {
+  padding: 16px 24px 24px;
+  border-top: 1px solid var(--border-light);
+}
+
+/* ==================== 下拉菜单样式增强 ==================== */
+:deep(.el-dropdown-menu) {
+  border-radius: 12px;
+  box-shadow: 
+    0 8px 24px rgba(62, 39, 35, 0.12),
+    0 2px 8px rgba(62, 39, 35, 0.08);
+  border: 1px solid var(--border-light);
+}
+
+:deep(.el-dropdown-menu__item) {
+  transition: all 0.2s;
+}
+
+:deep(.el-dropdown-menu__item:hover) {
+  background: var(--bg-hover);
+  color: var(--primary-color);
+}
+
+/* ==================== 标签页样式增强 ==================== */
+:deep(.el-tabs__item) {
+  transition: all 0.3s;
+  font-weight: 500;
+}
+
+:deep(.el-tabs__item:hover) {
+  color: var(--primary-color);
+}
+
+:deep(.el-tabs__item.is-active) {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+:deep(.el-tabs__active-bar) {
+  background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+  height: 3px;
+}
+
+/* ==================== 消息提示样式增强 ==================== */
+:deep(.el-message) {
+  border-radius: 12px;
+  box-shadow: 
+    0 4px 16px rgba(62, 39, 35, 0.12),
+    0 2px 8px rgba(62, 39, 35, 0.08);
+}
+
+:deep(.el-message--success) {
+  background: rgba(129, 199, 132, 0.1);
+  border-color: var(--success-color);
+}
+
+:deep(.el-message--error) {
+  background: rgba(229, 115, 115, 0.1);
+  border-color: var(--error-color);
+}
+
+:deep(.el-message--warning) {
+  background: rgba(255, 183, 77, 0.1);
+  border-color: var(--warning-color);
+}
+
+:deep(.el-message--info) {
+  background: rgba(100, 181, 246, 0.1);
+  border-color: var(--info-color);
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
   :root {

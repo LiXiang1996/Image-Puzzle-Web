@@ -13,10 +13,10 @@ import { useUserStore } from '@/stores/user'
  * - 首页和个人中心需要登录认证
  */
 const routes: RouteRecordRaw[] = [
-  // 根路径重定向到登录页
+  // 根路径重定向到发现广场
   {
     path: '/',
-    redirect: '/login',
+    redirect: '/discover',
   },
   {
     path: '/login',
@@ -49,7 +49,25 @@ const routes: RouteRecordRaw[] = [
         name: 'Home',
         component: () => import('@/views/Home.vue'),
         meta: {
-          title: '首页',
+          title: '我的空间',
+          requiresAuth: true,
+        },
+      },
+      {
+        path: 'discover',
+        name: 'HomeDiscover',
+        component: () => import('@/views/Discover.vue'),
+        meta: {
+          title: '发现广场',
+          requiresAuth: true,
+        },
+      },
+      {
+        path: 'memories',
+        name: 'HomeMemories',
+        component: () => import('@/views/Memories.vue'),
+        meta: {
+          title: '回忆瞬间',
           requiresAuth: true,
         },
       },
@@ -113,6 +131,44 @@ const routes: RouteRecordRaw[] = [
       requiresAuth: false,
     },
   },
+  // 发现广场（公开，不需要登录）
+  {
+    path: '/discover',
+    name: 'Discover',
+    component: () => import('@/layouts/PublicLayout.vue'),
+    meta: {
+      requiresAuth: false,
+    },
+    children: [
+      {
+        path: '',
+        component: () => import('@/views/Discover.vue'),
+        meta: {
+          title: '发现广场',
+          requiresAuth: false,
+        },
+      },
+    ],
+  },
+  // 回忆瞬间（公开，不需要登录）
+  {
+    path: '/memories',
+    name: 'Memories',
+    component: () => import('@/layouts/PublicLayout.vue'),
+    meta: {
+      requiresAuth: false,
+    },
+    children: [
+      {
+        path: '',
+        component: () => import('@/views/Memories.vue'),
+        meta: {
+          title: '回忆瞬间',
+          requiresAuth: false,
+        },
+      },
+    ],
+  },
   // 404 页面 - 匹配所有未定义的路由
   {
     path: '/:pathMatch(.*)*',
@@ -152,6 +208,23 @@ router.beforeEach((to, _from, next) => {
   if (to.path === '/login' && userStore.isAuthenticated) {
     next('/home')
     return
+  }
+
+  // 如果已登录，访问公开的发现广场或回忆瞬间时，重定向到登录后的版本
+  if (userStore.isAuthenticated) {
+    if (to.path === '/discover') {
+      next('/home/discover')
+      return
+    }
+    if (to.path === '/memories') {
+      next('/home/memories')
+      return
+    }
+    // 如果访问根路径，重定向到首页
+    if (to.path === '/') {
+      next('/home')
+      return
+    }
   }
 
   // 检查路由是否需要登录认证

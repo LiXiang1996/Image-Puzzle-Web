@@ -267,8 +267,11 @@ const resetForm = () => {
 .preview-image {
   max-width: 100%;
   max-height: 500px;
+  width: auto;
+  height: auto;
   object-fit: contain;
   border-radius: var(--radius-md);
+  /* 不强制尺寸，让图片保持原始尺寸，避免小图标被过度放大 */
 }
 
 .image-actions {

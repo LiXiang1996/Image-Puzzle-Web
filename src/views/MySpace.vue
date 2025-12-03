@@ -10,15 +10,25 @@
       >
         新建笔记
       </el-button>
-      <el-input
-        v-model="searchKeyword"
-        placeholder="搜索笔记标题..."
-        :prefix-icon="Search"
-        clearable
-        class="search-input"
-        @input="handleSearch"
-        @clear="handleSearch"
-      />
+      <div class="search-wrapper">
+        <el-input
+          v-model="searchKeyword"
+          placeholder="搜索笔记标题..."
+          :prefix-icon="Search"
+          clearable
+          class="search-input"
+          @keyup.enter="handleSearch"
+          @clear="handleSearchClear"
+        />
+        <el-button
+          type="primary"
+          :icon="Search"
+          @click="handleSearch"
+          class="search-button"
+        >
+          搜索
+        </el-button>
+      </div>
     </div>
 
     <!-- 笔记列表 -->
@@ -42,6 +52,9 @@
           >
             {{ getStatusText(note.status) }}
           </el-tag>
+        </div>
+        <div class="note-content-preview" v-if="note.content_preview">
+          {{ note.content_preview }}
         </div>
         <div class="note-meta">
           <span class="note-time">{{ formatTime(note.updated_at) }}</span>
@@ -142,6 +155,14 @@ const handleSearch = () => {
 }
 
 /**
+ * 清除搜索
+ */
+const handleSearchClear = () => {
+  searchKeyword.value = ''
+  handleSearch()
+}
+
+/**
  * 分页大小改变
  */
 const handleSizeChange = (size: number) => {
@@ -188,6 +209,9 @@ onMounted(() => {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
+  padding-top: var(--spacing-xl);
+  padding-left: var(--spacing-lg);
+  padding-right: var(--spacing-lg);
 }
 
 .toolbar {
@@ -213,12 +237,22 @@ onMounted(() => {
   box-shadow: var(--shadow-md);
 }
 
-.search-input {
+.search-wrapper {
+  display: flex;
+  gap: var(--spacing-sm);
   flex: 1;
-  max-width: 400px;
+  max-width: 500px;
 }
 
-:deep(.el-input__wrapper) {
+.search-input {
+  flex: 1;
+}
+
+.search-button {
+  flex-shrink: 0;
+}
+
+:deep(.search-input .el-input__wrapper) {
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
 }
@@ -269,6 +303,18 @@ onMounted(() => {
 
 .status-tag {
   flex-shrink: 0;
+}
+
+.note-content-preview {
+  color: var(--text-secondary);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  margin-bottom: var(--spacing-sm);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 .note-meta {

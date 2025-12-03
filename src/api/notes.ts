@@ -88,6 +88,7 @@ export const autoSaveNote = (noteId: string, content: string) => {
 export const getDiscoverNotes = (params?: {
   page?: number
   page_size?: number
+  search?: string
 }) => {
   return request.get<DiscoverListResponse['data']>('/discover', { params })
 }

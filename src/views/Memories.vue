@@ -28,11 +28,10 @@
           <!-- 点赞按钮（在图片右下角） -->
           <div
             class="like-button"
-            v-if="userStore.isAuthenticated"
             @click.stop="handleLike(memory)"
-            :class="{ liked: memory.is_liked }"
+            :class="{ liked: memory.is_liked, 'not-authenticated': !userStore.isAuthenticated }"
           >
-            <el-icon class="like-icon">
+            <el-icon class="like-icon" v-if="userStore.isAuthenticated">
               <Goods />
             </el-icon>
             <span class="like-count">{{ memory.like_count }}</span>
@@ -89,6 +88,7 @@ import { Plus, Goods } from '@element-plus/icons-vue'
 import dayjs from 'dayjs'
 import defaultAvatar from '@/assets/default_avatar.png'
 import MemoryUploadDialog from '@/components/MemoryUploadDialog.vue'
+import { checkAuth } from '@/utils/auth'
 
 const userStore = useUserStore()
 
@@ -134,10 +134,7 @@ const handleImageLoad = () => {
  * 打开上传弹窗
  */
 const handleOpenUpload = () => {
-  if (!userStore.isAuthenticated) {
-    ElMessage.warning('请先登录')
-    return
-  }
+  if (!checkAuth('发布回忆')) return
   showUploadDialog.value = true
 }
 
@@ -153,10 +150,7 @@ const handleUploadSuccess = () => {
  * 点赞处理
  */
 const handleLike = async (memory: MemoryMomentItem) => {
-  if (!userStore.isAuthenticated) {
-    ElMessage.warning('请先登录')
-    return
-  }
+  if (!checkAuth('点赞')) return
 
   try {
     const data = await toggleMemoryLike(memory.id)
@@ -282,10 +276,14 @@ onMounted(() => {
 }
 
 .memory-image {
-  width: 100%;
+  max-width: 100%;
+  max-height: 800px;
+  width: auto;
   height: auto;
   display: block;
   object-fit: contain; /* 保持原始宽高比，不裁剪 */
+  /* 不强制宽度，让图片保持原始尺寸，避免小图标被过度放大 */
+  margin: 0 auto; /* 居中显示 */
 }
 
 .like-button {
@@ -314,6 +312,16 @@ onMounted(() => {
 
 .like-button.liked:hover {
   background-color: rgba(229, 115, 115, 1);
+}
+
+.like-button.not-authenticated {
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.like-button.not-authenticated:hover {
+  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.7);
 }
 
 .like-icon {

@@ -1,9 +1,35 @@
 <template>
   <div class="discover-container">
+    <!-- 搜索框 -->
+    <div class="search-section">
+      <div class="search-wrapper">
+        <el-input
+          v-model="searchKeyword"
+          placeholder="搜索笔记标题或内容..."
+          clearable
+          @keyup.enter="handleSearch"
+          @clear="handleSearchClear"
+          class="search-input"
+        >
+          <template #prefix>
+            <el-icon><Search /></el-icon>
+          </template>
+        </el-input>
+        <el-button
+          type="primary"
+          :icon="Search"
+          @click="handleSearch"
+          class="search-button"
+        >
+          搜索
+        </el-button>
+      </div>
+    </div>
+
     <!-- 公开文章列表 -->
     <div class="notes-list" v-loading="loading">
       <div v-if="notes.length === 0 && !loading" class="empty-state">
-        <el-empty description="还没有公开文章，快去发布第一篇吧~" />
+        <el-empty :description="searchKeyword ? '没有找到相关笔记' : '还没有公开文章，快去发布第一篇吧~'" />
       </div>
 
       <div
@@ -71,6 +97,7 @@ import { getDiscoverNotes } from '@/api/notes'
 import type { PublicNoteItem } from '@/types/note'
 import dayjs from 'dayjs'
 import defaultAvatar from '@/assets/default_avatar.png'
+import { Search } from '@element-plus/icons-vue'
 
 const router = useRouter()
 
@@ -80,6 +107,7 @@ const loading = ref(false)
 const total = ref(0)
 const currentPage = ref(1)
 const pageSize = ref(20)
+const searchKeyword = ref('')
 
 /**
  * 格式化时间：MM-DD HH:MM
@@ -129,6 +157,7 @@ const fetchNotes = async () => {
     const response = await getDiscoverNotes({
       page: currentPage.value,
       page_size: pageSize.value,
+      search: searchKeyword.value.trim() || undefined,
     })
 
     if (response) {
@@ -142,6 +171,22 @@ const fetchNotes = async () => {
   }
 }
 
+/**
+ * 搜索处理
+ */
+const handleSearch = () => {
+  currentPage.value = 1 // 搜索时重置到第一页
+  fetchNotes()
+}
+
+/**
+ * 清除搜索
+ */
+const handleSearchClear = () => {
+  searchKeyword.value = ''
+  handleSearch()
+}
+
 // 初始化
 onMounted(() => {
   fetchNotes()
@@ -153,6 +198,33 @@ onMounted(() => {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
+  padding: var(--spacing-lg);
+}
+
+.search-section {
+  margin-bottom: var(--spacing-lg);
+  display: flex;
+  justify-content: center;
+}
+
+.search-wrapper {
+  display: flex;
+  gap: var(--spacing-sm);
+  width: 100%;
+  max-width: 600px;
+}
+
+.search-input {
+  flex: 1;
+}
+
+.search-button {
+  flex-shrink: 0;
+}
+
+:deep(.search-input .el-input__wrapper) {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--card-shadow);
 }
 
 .notes-list {

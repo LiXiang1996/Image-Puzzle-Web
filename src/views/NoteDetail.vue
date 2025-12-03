@@ -30,8 +30,8 @@
           </div>
         </div>
 
-        <!-- 右侧操作栏（不是自己的文章时显示） -->
-        <div class="action-sidebar" v-if="!isOwnNote && userStore.isAuthenticated">
+        <!-- 右侧操作栏（不是自己的文章时显示，未登录用户也可以看到） -->
+        <div class="action-sidebar" v-if="!isOwnNote">
           <div class="action-item" @click="handleLike" :class="{ active: likeData.is_liked }">
             <el-icon class="action-icon" :class="{ liked: likeData.is_liked }">
               <Goods />
@@ -48,7 +48,7 @@
             <span class="action-label">收藏</span>
           </div>
           
-          <div class="action-item" @click="scrollToComments">
+          <div class="action-item" @click="handleCommentClick">
             <el-icon class="action-icon">
               <ChatLineRound />
             </el-icon>
@@ -85,7 +85,12 @@
           </div>
         </div>
         <div v-else class="comment-login-tip">
-          <el-button type="text" @click="router.push('/login')">登录后即可评论</el-button>
+          <el-button 
+            type="primary" 
+            @click="router.push({ path: '/login', query: { redirect: route.fullPath } })"
+          >
+            登录后即可评论
+          </el-button>
         </div>
 
         <!-- 评论列表 -->
@@ -129,6 +134,7 @@ import type { CommentItem } from '@/types/interaction'
 import { ElMessage } from 'element-plus'
 // 图标通过全局注册使用，不需要单独导入
 import CommentList from '@/components/CommentList.vue'
+import { checkAuth } from '@/utils/auth'
 
 const route = useRoute()
 const router = useRouter()
@@ -286,11 +292,7 @@ const loadComments = async () => {
  * 处理点赞/取消点赞
  */
 const handleLike = async () => {
-  if (!userStore.isAuthenticated) {
-    ElMessage.warning('请先登录')
-    router.push('/login')
-    return
-  }
+  if (!checkAuth('点赞')) return
   
   if (!note.value || liking.value) return
   
@@ -311,11 +313,7 @@ const handleLike = async () => {
  * 处理收藏/取消收藏
  */
 const handleFavorite = async () => {
-  if (!userStore.isAuthenticated) {
-    ElMessage.warning('请先登录')
-    router.push('/login')
-    return
-  }
+  if (!checkAuth('收藏')) return
   
   if (!note.value || favoriting.value) return
   
@@ -350,9 +348,20 @@ const scrollToComments = () => {
 }
 
 /**
+ * 处理评论点击
+ * 未登录时跳转登录，已登录时滚动到评论区域
+ */
+const handleCommentClick = () => {
+  if (!checkAuth('评论')) return
+  scrollToComments()
+}
+
+/**
  * 提交评论
  */
 const handleSubmitComment = async () => {
+  if (!checkAuth('评论')) return
+  
   if (!note.value || !newCommentContent.value.trim() || submittingComment.value) return
   
   submittingComment.value = true

@@ -1,38 +1,50 @@
 <template>
-  <div class="main-layout">
+  <div class="public-layout">
     <el-container>
       <el-header class="header">
         <div class="header-left">
-          <router-link to="/home" class="logo-link">
+          <router-link to="/discover" class="logo-link">
             <h2 class="logo">家书</h2>
           </router-link>
           <nav class="nav-links">
-            <router-link to="/home" class="nav-link" exact-active-class="router-link-active">我的空间</router-link>
-            <router-link to="/home/discover" class="nav-link">发现广场</router-link>
-            <router-link to="/home/memories" class="nav-link">回忆瞬间</router-link>
+            <router-link to="/discover" class="nav-link">发现广场</router-link>
+            <router-link to="/memories" class="nav-link">回忆瞬间</router-link>
           </nav>
         </div>
         <div class="header-right">
-          <el-dropdown @command="handleCommand">
-            <span class="user-info">
-              <!-- 用户头像 -->
+          <template v-if="userStore.isAuthenticated">
+            <!-- 已登录：显示用户信息和下拉菜单 -->
+            <el-dropdown @command="handleCommand">
+              <span class="user-info">
+                <img 
+                  :src="avatarUrl" 
+                  alt="头像" 
+                  class="user-avatar"
+                  @error="handleAvatarError"
+                />
+                <span>{{ displayName }}</span>
+                <el-icon class="el-icon--right"><CaretBottom /></el-icon>
+              </span>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item command="home">我的空间</el-dropdown-item>
+                  <el-dropdown-item command="profile">个人中心</el-dropdown-item>
+                  <el-dropdown-item divided command="logout">退出登录</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+          </template>
+          <template v-else>
+            <!-- 未登录：显示用户头像和文字，点击跳转登录（不使用下拉框，直接点击） -->
+            <div class="user-info guest-user" @click="goToLogin">
               <img 
-                :src="avatarUrl" 
-                alt="头像" 
+                :src="defaultAvatar" 
+                alt="用户" 
                 class="user-avatar"
-                @error="handleAvatarError"
               />
-              <!-- 用户昵称或用户名 -->
-              <span>{{ displayName }}</span>
-              <el-icon class="el-icon--right"><CaretBottom /></el-icon>
-            </span>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item command="profile">个人中心</el-dropdown-item>
-                <el-dropdown-item divided command="logout">退出登录</el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
+              <span>用户</span>
+            </div>
+          </template>
         </div>
       </el-header>
       <el-main class="main-content">
@@ -44,8 +56,8 @@
 
 <script setup lang="ts">
 /**
- * 主布局组件
- * 用于首页（创作中心）的布局，包含顶部导航栏和主内容区域
+ * 公共布局组件
+ * 用于公开页面（发现广场、回忆瞬间等），支持未登录用户访问
  */
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
@@ -62,7 +74,6 @@ const avatarError = ref(false)
 
 /**
  * 计算属性：获取头像URL
- * 如果用户设置了头像，使用用户头像；否则使用默认头像
  */
 const avatarUrl = computed(() => {
   if (avatarError.value) {
@@ -79,7 +90,6 @@ const avatarUrl = computed(() => {
 
 /**
  * 计算属性：显示名称
- * 优先显示昵称，如果没有昵称则显示用户名
  */
 const displayName = computed(() => {
   const nickname = userStore.userInfo?.nickname
@@ -89,7 +99,6 @@ const displayName = computed(() => {
 
 /**
  * 头像加载错误处理
- * 如果用户头像加载失败，使用默认头像
  */
 const handleAvatarError = () => {
   avatarError.value = true
@@ -97,21 +106,39 @@ const handleAvatarError = () => {
 
 /**
  * 处理下拉菜单命令
- * @param command 命令类型：'profile' 跳转到个人中心，'logout' 退出登录
  */
 const handleCommand = (command: string) => {
-  if (command === 'profile') {
+  if (command === 'home') {
+    router.push('/home')
+  } else if (command === 'profile') {
     router.push('/user/profile')
   } else if (command === 'logout') {
     userStore.userLogout()
     ElMessage.success('已退出登录')
-    router.push('/login')
+    router.push('/discover')
   }
+}
+
+/**
+ * 跳转到登录页
+ */
+const goToLogin = () => {
+  router.push({
+    path: '/login',
+    query: { redirect: router.currentRoute.value.fullPath }
+  })
+}
+
+/**
+ * 跳转到注册页
+ */
+const goToRegister = () => {
+  router.push('/register')
 }
 </script>
 
 <style scoped>
-.main-layout {
+.public-layout {
   height: 100vh;
 }
 
@@ -169,36 +196,15 @@ const handleCommand = (command: string) => {
   font-weight: 500;
 }
 
-.vip-button {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 6px 12px;
-  border-radius: 6px;
-  transition: all 0.3s;
-  color: #f56c6c;
-  font-weight: 500;
-}
-
-.vip-button:hover {
-  background-color: #fef0f0;
-  color: #f56c6c;
-}
-
-.vip-icon {
-  width: 20px;
-  height: 20px;
-  object-fit: contain;
-  margin-right: 4px;
-}
-
-.vip-text {
-  font-size: 14px;
-}
-
 .header-right {
   display: flex;
   align-items: center;
+}
+
+.auth-buttons {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
 }
 
 .user-info {
@@ -212,6 +218,16 @@ const handleCommand = (command: string) => {
 }
 
 .user-info:hover {
+  background-color: #f5f7fa;
+}
+
+.guest-user {
+  cursor: pointer;
+  /* 确保不会触发任何下拉行为 */
+  user-select: none;
+}
+
+.guest-user:hover {
   background-color: #f5f7fa;
 }
 
