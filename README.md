@@ -101,7 +101,7 @@ npm run preview
 
 ```env
 VITE_API_BASE_URL=http://localhost:8080/api
-VITE_APP_TITLE=图片积木
+VITE_APP_TITLE=家书
 ```
 
 ## 路由说明
