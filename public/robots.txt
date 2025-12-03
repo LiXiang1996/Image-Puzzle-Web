@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# 禁止爬取某些路径（根据你的需求调整）
+# Disallow: /api/
+# Disallow: /user/
+
+# Sitemap 位置
+Sitemap: https://image-puzzle-web-skmv.vercel.app/sitemap.xml
+
