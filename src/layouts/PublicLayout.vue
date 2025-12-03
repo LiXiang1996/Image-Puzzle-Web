@@ -128,13 +128,6 @@ const goToLogin = () => {
     query: { redirect: router.currentRoute.value.fullPath }
   })
 }
-
-/**
- * 跳转到注册页
- */
-const goToRegister = () => {
-  router.push('/register')
-}
 </script>
 
 <style scoped>
