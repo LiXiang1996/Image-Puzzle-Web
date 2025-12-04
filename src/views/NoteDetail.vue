@@ -4,6 +4,18 @@
       <div v-if="note" class="note-content-wrapper">
         <!-- 主内容区域 -->
         <div class="note-content">
+          <!-- 返回首页按钮 -->
+          <div class="back-button-wrapper">
+            <el-button 
+              type="text" 
+              @click="goToHome"
+              class="back-button"
+            >
+              <el-icon><ArrowLeft /></el-icon>
+              <span>返回首页</span>
+            </el-button>
+          </div>
+          
           <!-- 标题 -->
           <h1 class="note-title">{{ note.title }}</h1>
 
@@ -135,6 +147,7 @@ import { ElMessage } from 'element-plus'
 // 图标通过全局注册使用，不需要单独导入
 import CommentList from '@/components/CommentList.vue'
 import { checkAuth } from '@/utils/auth'
+import { ArrowLeft } from '@element-plus/icons-vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -203,6 +216,18 @@ const handleAvatarError = () => {
 const handleEdit = () => {
   if (note.value) {
     router.push(`/edit/${note.value.id}`)
+  }
+}
+
+/**
+ * 返回首页
+ * 根据登录状态跳转到不同的首页
+ */
+const goToHome = () => {
+  if (userStore.isAuthenticated) {
+    router.push('/home')
+  } else {
+    router.push('/discover')
   }
 }
 
@@ -447,6 +472,29 @@ onMounted(() => {
 .note-content {
   flex: 1;
   min-width: 0;
+}
+
+.back-button-wrapper {
+  margin-bottom: var(--spacing-md);
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  color: var(--text-secondary);
+  font-size: var(--font-size-base);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  transition: all 0.3s;
+}
+
+.back-button:hover {
+  color: var(--primary-color);
+  background-color: var(--bg-hover);
+}
+
+.back-button :deep(.el-icon) {
+  font-size: 18px;
 }
 
 .note-title {
