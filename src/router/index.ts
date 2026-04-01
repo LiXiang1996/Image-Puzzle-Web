@@ -239,5 +239,17 @@ router.beforeEach((to, _from, next) => {
   }
 })
 
+/**
+ * 路由切换后上报 GA4 页面浏览
+ */
+router.afterEach((to) => {
+  if (typeof window !== 'undefined' && (window as any).gtag) {
+    ;(window as any).gtag('config', 'G-1CDYE24CH6', {
+      page_path: to.fullPath,
+      page_title: (to.meta.title as string) || document.title,
+    })
+  }
+})
+
 export default router
 
