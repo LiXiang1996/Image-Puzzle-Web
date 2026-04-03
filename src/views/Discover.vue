@@ -1,5 +1,11 @@
 <template>
   <div class="discover-container">
+    <header class="page-intro">
+      <h1>发现广场</h1>
+      <p class="page-intro-text">
+        浏览大家公开的图文笔记与图片分享，支持按标题与内容搜索，发现生活记录与温暖瞬间。
+      </p>
+    </header>
     <!-- 搜索框 -->
     <div class="search-section">
       <div class="search-wrapper">
@@ -48,7 +54,7 @@
           <div class="author-info">
             <img
               :src="note.author.avatar || defaultAvatar"
-              :alt="note.author.nickname"
+              :alt="`${note.author.nickname || '作者'}的头像`"
               class="author-avatar"
               @error="handleAvatarError"
             />
@@ -199,6 +205,29 @@ onMounted(() => {
   max-width: 1200px;
   margin: 0 auto;
   padding: var(--spacing-lg);
+}
+
+.page-intro {
+  margin-bottom: var(--spacing-lg);
+  text-align: center;
+}
+
+.page-intro h1 {
+  margin: 0 0 var(--spacing-sm);
+  font-size: var(--font-size-h2);
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: var(--line-height-tight);
+}
+
+.page-intro-text {
+  margin: 0;
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+  line-height: var(--line-height-normal);
 }
 
 .search-section {

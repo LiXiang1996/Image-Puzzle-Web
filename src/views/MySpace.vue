@@ -1,5 +1,11 @@
 <template>
   <div class="myspace-container">
+    <header class="page-intro">
+      <h1>我的空间</h1>
+      <p class="page-intro-text">
+        管理你的日记与图文笔记：新建、搜索与打开笔记，支持图片等内容编辑。
+      </p>
+    </header>
     <!-- 顶部操作栏 -->
     <div class="toolbar">
       <el-button
@@ -212,6 +218,27 @@ onMounted(() => {
   padding-top: var(--spacing-xl);
   padding-left: var(--spacing-lg);
   padding-right: var(--spacing-lg);
+}
+
+.page-intro {
+  margin-bottom: var(--spacing-lg);
+  text-align: left;
+}
+
+.page-intro h1 {
+  margin: 0 0 var(--spacing-sm);
+  font-size: var(--font-size-h2);
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: var(--line-height-tight);
+}
+
+.page-intro-text {
+  margin: 0;
+  max-width: 640px;
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+  line-height: var(--line-height-normal);
 }
 
 .toolbar {

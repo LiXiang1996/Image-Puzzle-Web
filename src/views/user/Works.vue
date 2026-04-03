@@ -13,7 +13,11 @@
       <el-row :gutter="20" v-loading="worksStore.loading">
         <el-col :span="6" v-for="work in worksStore.works" :key="work.id">
           <el-card class="work-card" :body-style="{ padding: '0px' }">
-            <img :src="work.imageUrl" class="work-image" />
+            <img
+              :src="work.imageUrl"
+              :alt="work.title ? `${work.title} 封面图` : '作品封面图'"
+              class="work-image"
+            />
             <div class="work-info">
               <h3>{{ work.title }}</h3>
               <p>{{ work.description || '暂无描述' }}</p>

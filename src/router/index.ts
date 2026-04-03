@@ -5,6 +5,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 import { useUserStore } from '@/stores/user'
+import { applyRouteSeo, DEFAULT_META_DESCRIPTION } from '@/utils/seo'
 
 /**
  * 路由配置列表
@@ -25,6 +26,8 @@ const routes: RouteRecordRaw[] = [
     meta: {
       title: '登录',
       requiresAuth: false,
+      description: '登录家书，使用在线记事本记录生活、上传图片并在发现广场与回忆瞬间分享温暖瞬间。',
+      robots: 'noindex, nofollow',
     },
   },
   {
@@ -34,6 +37,8 @@ const routes: RouteRecordRaw[] = [
     meta: {
       title: '注册',
       requiresAuth: false,
+      description: '注册家书账号，开启图文笔记与图片分享：记录琐事、收藏回忆。',
+      robots: 'noindex, nofollow',
     },
   },
   // 首页路由 - 使用 MainLayout 布局，包含创作中心
@@ -51,6 +56,9 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: '我的空间',
           requiresAuth: true,
+          description:
+            '我的空间：在家书管理你的图文笔记，新建、编辑与整理日记与生活记录，支持图片上传。',
+          robots: 'noindex, nofollow',
         },
       },
       {
@@ -60,6 +68,9 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: '发现广场',
           requiresAuth: true,
+          description:
+            '登录后在家书发现广场浏览公开图文笔记与图片分享，发现他人的生活记录与温暖瞬间。',
+          robots: 'noindex, nofollow',
         },
       },
       {
@@ -69,6 +80,9 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: '回忆瞬间',
           requiresAuth: true,
+          description:
+            '回忆瞬间：上传与浏览带图动态，用影像与简短文字分享个人琐事与温馨时刻。',
+          robots: 'noindex, nofollow',
         },
       },
     ],
@@ -88,6 +102,8 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: '个人资料',
           requiresAuth: true,
+          description: '管理家书个人资料与头像，维护你的笔记与图片分享账户信息。',
+          robots: 'noindex, nofollow',
         },
       },
       {
@@ -97,6 +113,8 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: '我的收藏',
           requiresAuth: true,
+          description: '查看在家书中收藏的公开笔记与图文内容。',
+          robots: 'noindex, nofollow',
         },
       },
     ],
@@ -109,6 +127,8 @@ const routes: RouteRecordRaw[] = [
     meta: {
       title: '编辑笔记',
       requiresAuth: true,
+      description: '在家书编辑器中撰写图文笔记、插入图片并保存或发布。',
+      robots: 'noindex, nofollow',
     },
   },
   // 笔记详情页（公开）
@@ -119,6 +139,9 @@ const routes: RouteRecordRaw[] = [
     meta: {
       title: '笔记详情',
       requiresAuth: false, // 公开文章不需要登录
+      description:
+        '阅读家书用户分享的公开图文笔记，支持评论与互动。具体标题与摘要在打开文章后由页面更新。',
+      robots: 'index, follow',
     },
   },
   // 用户公开主页
@@ -129,6 +152,8 @@ const routes: RouteRecordRaw[] = [
     meta: {
       title: '用户主页',
       requiresAuth: false,
+      description: '家书用户公开主页：浏览该用户发布的公开图文笔记与生活分享。',
+      robots: 'index, follow',
     },
   },
   // 发现广场（公开，不需要登录）
@@ -146,6 +171,9 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: '发现广场',
           requiresAuth: false,
+          description:
+            '家书发现广场：浏览用户公开的图文笔记与图片分享，搜索感兴趣的生活记录与温暖故事。',
+          robots: 'index, follow',
         },
       },
     ],
@@ -165,6 +193,9 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: '回忆瞬间',
           requiresAuth: false,
+          description:
+            '家书回忆瞬间：用图片与文字分享生活影像与琐事瞬间，浏览他人的公开回忆动态。',
+          robots: 'index, follow',
         },
       },
     ],
@@ -176,6 +207,8 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/views/NotFound.vue'),
     meta: {
       title: '页面未找到',
+      description: '未找到请求的页面。',
+      robots: 'noindex, nofollow',
     },
   },
 ]
@@ -243,6 +276,15 @@ router.beforeEach((to, _from, next) => {
  * 路由切换后上报 GA4 页面浏览
  */
 router.afterEach((to) => {
+  const description =
+    (to.meta.description as string | undefined) || DEFAULT_META_DESCRIPTION
+  const robots = to.meta.robots as string | undefined
+  applyRouteSeo({
+    description,
+    canonicalPath: to.path,
+    robots,
+  })
+
   if (typeof window !== 'undefined' && (window as any).gtag) {
     ;(window as any).gtag('config', 'G-1CDYE24CH6', {
       page_path: to.fullPath,

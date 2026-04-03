@@ -9,13 +9,13 @@
           class="user-avatar-large"
           @error="handleAvatarError"
         />
-        <h2 class="user-name">{{ userInfo.nickname || userInfo.username }}</h2>
+        <h1 class="user-name">{{ userInfo.nickname || userInfo.username }}</h1>
         <p class="user-bio" v-if="userInfo.bio">{{ userInfo.bio }}</p>
       </div>
 
       <!-- 文章列表 -->
       <div class="notes-section">
-        <h3 class="section-title">公开文章</h3>
+        <h2 class="section-title">公开文章</h2>
         <div class="notes-list" v-if="notes.length > 0">
           <div
             v-for="note in notes"
@@ -23,7 +23,7 @@
             class="note-item"
             @click="handleNoteClick(note.id)"
           >
-            <h4 class="note-title">{{ note.title }}</h4>
+            <h3 class="note-title">{{ note.title }}</h3>
             <p class="note-preview" v-if="note.content_preview">
               {{ note.content_preview }}
             </p>

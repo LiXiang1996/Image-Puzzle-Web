@@ -125,7 +125,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getPublicNoteById } from '@/api/notes'
 import { useUserStore } from '@/stores/user'
@@ -147,6 +147,7 @@ import { ElMessage } from 'element-plus'
 // 图标通过全局注册使用，不需要单独导入
 import CommentList from '@/components/CommentList.vue'
 import { checkAuth } from '@/utils/auth'
+import { applyRouteSeo, buildNoteMetaDescription } from '@/utils/seo'
 import { ArrowLeft } from '@element-plus/icons-vue'
 
 const route = useRoute()
@@ -262,6 +263,14 @@ const loadNote = async () => {
         loadFavoriteData(),
         loadComments()
       ])
+
+      const appTitle = import.meta.env.VITE_APP_TITLE || '家书'
+      document.title = `${note.value.title} - ${appTitle}`
+      applyRouteSeo({
+        description: buildNoteMetaDescription(note.value),
+        canonicalPath: route.path,
+        robots: 'index, follow',
+      })
     }
   } catch (error) {
     console.error('加载笔记详情失败:', error)
@@ -443,6 +452,13 @@ const handleDeleteComment = async (commentId: number) => {
 onMounted(() => {
   loadNote()
 })
+
+watch(
+  () => route.params.id,
+  () => {
+    loadNote()
+  }
+)
 </script>
 
 <style scoped>

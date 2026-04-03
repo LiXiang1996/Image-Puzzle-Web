@@ -13,6 +13,8 @@ declare module '*.vue' {
 interface ImportMetaEnv {
   readonly VITE_API_BASE_URL: string
   readonly VITE_APP_TITLE: string
+  /** 站点绝对源（canonical / og:url），如 https://example.com */
+  readonly VITE_SITE_ORIGIN?: string
 }
 
 interface ImportMeta {

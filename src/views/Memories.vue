@@ -1,5 +1,11 @@
 <template>
   <div class="memories-container">
+    <header class="page-intro">
+      <h1>回忆瞬间</h1>
+      <p class="page-intro-text">
+        用照片与简短文字分享生活影像与琐事瞬间，浏览他人公开的回忆动态。
+      </p>
+    </header>
     <!-- 瀑布流布局 -->
     <div class="memories-grid" v-loading="loading">
       <!-- 第一个位置：添加图片 -->
@@ -211,6 +217,29 @@ onMounted(() => {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+}
+
+.page-intro {
+  padding-top: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  text-align: center;
+}
+
+.page-intro h1 {
+  margin: 0 0 var(--spacing-sm);
+  font-size: var(--font-size-h2);
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: var(--line-height-tight);
+}
+
+.page-intro-text {
+  margin: 0 auto;
+  max-width: 640px;
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+  line-height: var(--line-height-normal);
 }
 
 .memories-grid {

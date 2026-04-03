@@ -21,7 +21,12 @@
                 <el-icon class="is-loading"><Loading /></el-icon>
                 <span>上传中...</span>
               </div>
-              <img v-else-if="profileForm.avatar" :src="profileForm.avatar" class="avatar" />
+              <img
+                v-else-if="profileForm.avatar"
+                :src="profileForm.avatar"
+                alt="个人头像"
+                class="avatar"
+              />
               <div v-else class="avatar-placeholder">
                 <el-icon class="avatar-icon"><Plus /></el-icon>
                 <span class="avatar-text">上传头像</span>
