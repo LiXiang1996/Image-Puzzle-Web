@@ -4,7 +4,7 @@
       class="ai-toggle"
       type="button"
       @click="togglePanel"
-      :aria-expanded="String(panelVisible)"
+      :aria-expanded="panelVisible"
       aria-label="打开AI助手"
     >
       <span class="ai-toggle-mark">AI</span>
