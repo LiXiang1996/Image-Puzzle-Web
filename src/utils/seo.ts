@@ -38,6 +38,7 @@ export function applyRouteSeo(options: {
   description: string
   canonicalPath: string
   robots?: string
+  ogType?: 'website' | 'article' | 'profile'
 }) {
   const path = options.canonicalPath.startsWith('/')
     ? options.canonicalPath
@@ -51,6 +52,7 @@ export function applyRouteSeo(options: {
   upsertMeta('name', 'robots', robots)
 
   const title = document.title
+  upsertMeta('property', 'og:type', options.ogType ?? 'website')
   upsertMeta('property', 'og:title', title)
   upsertMeta('property', 'og:description', options.description)
   upsertMeta('property', 'og:url', canonical)

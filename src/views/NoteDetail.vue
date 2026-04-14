@@ -270,6 +270,7 @@ const loadNote = async () => {
         description: buildNoteMetaDescription(note.value),
         canonicalPath: route.path,
         robots: 'index, follow',
+        ogType: 'article',
       })
     }
   } catch (error) {
@@ -746,4 +747,3 @@ watch(
   }
 }
 </style>
-

@@ -52,15 +52,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getUserPublicNotes } from '@/api/notes'
 import type { PublicNoteItem } from '@/types/note'
 import dayjs from 'dayjs'
 import defaultAvatar from '@/assets/default_avatar.png'
+import { applyRouteSeo } from '@/utils/seo'
 
 const route = useRoute()
 const router = useRouter()
+const appTitle = import.meta.env.VITE_APP_TITLE || '家书'
 
 const userId = ref<string>(route.params.user_id as string)
 const userInfo = ref<any>(null)
@@ -75,6 +77,10 @@ const pageSize = ref(20)
  */
 const userAvatar = computed(() => {
   return userInfo.value?.avatar || defaultAvatar
+})
+
+const displayName = computed(() => {
+  return userInfo.value?.nickname || userInfo.value?.username || '用户'
 })
 
 /**
@@ -129,8 +135,29 @@ const fetchNotes = async () => {
     if (response) {
       notes.value = response.list
       total.value = response.total
-      // TODO: 从API获取用户信息
-      // userInfo.value = response.user
+
+      const author = response.list?.[0]?.author
+      if (author) {
+        userInfo.value = {
+          id: author.id,
+          nickname: author.nickname,
+          avatar: author.avatar,
+        }
+      }
+
+      const pageTitle = `${displayName.value}的主页 - ${appTitle}`
+      const description =
+        total.value > 0
+          ? `${displayName.value}在家书发布了 ${total.value} 篇公开图文笔记，浏览 TA 分享的生活记录与温暖瞬间。`
+          : `${displayName.value}的家书主页，浏览 TA 分享的公开图文笔记与生活记录。`
+
+      document.title = pageTitle
+      applyRouteSeo({
+        description,
+        canonicalPath: route.path,
+        robots: 'index, follow',
+        ogType: 'profile',
+      })
     }
   } catch (error) {
     console.error('获取用户文章失败:', error)
@@ -142,6 +169,16 @@ const fetchNotes = async () => {
 onMounted(() => {
   fetchNotes()
 })
+
+watch(
+  () => route.params.user_id,
+  (nextUserId) => {
+    userId.value = nextUserId as string
+    currentPage.value = 1
+    userInfo.value = null
+    fetchNotes()
+  }
+)
 </script>
 
 <style scoped>
@@ -257,4 +294,3 @@ onMounted(() => {
   justify-content: center;
 }
 </style>
-
