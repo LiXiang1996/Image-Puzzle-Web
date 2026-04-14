@@ -39,6 +39,7 @@
         <router-view />
       </el-main>
     </el-container>
+    <BuildInfoBadge />
   </div>
 </template>
 
@@ -53,6 +54,7 @@ import { ElMessage } from 'element-plus'
 import { CaretBottom } from '@element-plus/icons-vue'
 import { computed, ref } from 'vue'
 import defaultAvatar from '@/assets/default_avatar.png'
+import BuildInfoBadge from '@/components/BuildInfoBadge.vue'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -232,4 +234,3 @@ const handleCommand = (command: string) => {
   height: calc(100vh - 64px);
 }
 </style>
-
