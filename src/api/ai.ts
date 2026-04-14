@@ -16,7 +16,7 @@ export interface EditorAiChatResponse {
   reply: string
 }
 
-const useMockAi = import.meta.env.VITE_ENABLE_AI_MOCK !== 'false'
+const useMockAi = import.meta.env.VITE_ENABLE_AI_MOCK === 'true'
 
 export const chatWithEditorAssistant = async (
   payload: EditorAiChatRequest,

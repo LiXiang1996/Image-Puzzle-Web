@@ -477,7 +477,6 @@ onBeforeUnmount(() => {
   border-radius: var(--radius-lg);
   box-shadow: var(--card-shadow);
   padding: var(--spacing-lg);
-  margin-right: 96px;
 }
 
 .editor-header {
@@ -504,10 +503,13 @@ onBeforeUnmount(() => {
 .toolbar {
   display: flex;
   gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
   padding-bottom: var(--spacing-md);
-  border-bottom: 1px solid var(--border-light);
   margin-bottom: var(--spacing-md);
   flex-wrap: wrap;
+  background-color: var(--bg-secondary);
 }
 
 .toolbar-group {
@@ -526,11 +528,17 @@ onBeforeUnmount(() => {
   padding: var(--spacing-md);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+  background-color: #fff;
 }
 
 .editor-content {
   min-height: 400px;
   margin-bottom: var(--spacing-lg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: #fff;
+  overflow: hidden;
 }
 
 :deep(.ProseMirror) {
@@ -646,7 +654,6 @@ onBeforeUnmount(() => {
   }
 
   .editor-wrapper {
-    margin-right: 0;
     padding: var(--spacing-md);
   }
 
