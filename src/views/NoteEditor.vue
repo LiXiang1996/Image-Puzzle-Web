@@ -140,11 +140,16 @@
         </div>
       </div>
     </div>
+    <EditorAiAssistant
+      :note-title="noteTitle"
+      :note-content="editorContent"
+      @insert-content="handleInsertAiContent"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeUnmount, watch } from 'vue'
+import { computed, ref, onBeforeUnmount, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
@@ -159,6 +164,7 @@ import {
   ArrowLeft,
 } from '@element-plus/icons-vue'
 import { debounce } from '@/utils/index'
+import EditorAiAssistant from '@/components/EditorAiAssistant.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -171,6 +177,8 @@ const currentStatus = ref<'private' | 'public' | 'draft'>('private')
 const publishStatus = ref<'private' | 'public'>('public') // 发布状态选择，默认公开
 const saving = ref(false)
 const saveStatus = ref('已保存')
+
+const editorContent = computed(() => editor.value?.getHTML() || '')
 
 // Tiptap编辑器实例
 const editor = useEditor({
@@ -292,6 +300,12 @@ const handleInsertLink = () => {
   if (url && editor.value) {
     editor.value.chain().focus().setLink({ href: url }).run()
   }
+}
+
+const handleInsertAiContent = (content: string) => {
+  if (!editor.value) return
+  editor.value.chain().focus().insertContent(`\n${content}\n`).run()
+  ElMessage.success('已插入到正文')
 }
 
 /**
@@ -463,6 +477,7 @@ onBeforeUnmount(() => {
   border-radius: var(--radius-lg);
   box-shadow: var(--card-shadow);
   padding: var(--spacing-lg);
+  margin-right: 96px;
 }
 
 .editor-header {
@@ -624,5 +639,25 @@ onBeforeUnmount(() => {
   display: flex;
   gap: var(--spacing-md);
 }
-</style>
 
+@media (max-width: 960px) {
+  .note-editor-container {
+    padding: var(--spacing-md);
+  }
+
+  .editor-wrapper {
+    margin-right: 0;
+    padding: var(--spacing-md);
+  }
+
+  .editor-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+  }
+
+  .action-buttons {
+    width: 100%;
+  }
+}
+</style>

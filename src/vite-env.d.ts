@@ -15,9 +15,10 @@ interface ImportMetaEnv {
   readonly VITE_APP_TITLE: string
   /** 站点绝对源（canonical / og:url），如 https://example.com */
   readonly VITE_SITE_ORIGIN?: string
+  /** 是否启用前端 AI mock，默认 true */
+  readonly VITE_ENABLE_AI_MOCK?: string
 }
 
 interface ImportMeta {
   readonly env: ImportMetaEnv
 }
-
