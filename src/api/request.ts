@@ -29,7 +29,7 @@ const getBaseURL = (): string => {
 
 const service: AxiosInstance = axios.create({
   baseURL: getBaseURL(), // API 基础路径
-  timeout: 10000, // 请求超时时间 10 秒
+  timeout: 20000, // 请求超时时间 20 秒
   headers: {
     'Content-Type': 'application/json;charset=UTF-8',
   },
@@ -178,4 +178,3 @@ service.interceptors.response.use(
 
 // 导出封装后的请求方法
 export default apiRequest
-

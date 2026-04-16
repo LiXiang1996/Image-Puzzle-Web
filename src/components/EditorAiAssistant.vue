@@ -152,7 +152,8 @@ const sendMessage = async () => {
     promptInput.value = ''
   } catch (error) {
     console.error('AI 对话失败:', error)
-    ElMessage.error('AI 助手暂时不可用，请稍后再试')
+    const message = error instanceof Error ? error.message : 'AI 助手暂时不可用，请稍后再试'
+    ElMessage.error(message)
     messages.value = history
   } finally {
     sending.value = false
